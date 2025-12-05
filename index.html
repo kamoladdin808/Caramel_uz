@@ -449,7 +449,7 @@
             align-items: center;
             justify-content: center;
             background: #0f0c0a;
-            z-index: 8000;
+            z-index: 10000;
             transition: opacity 0.6s ease, visibility 0.6s;
         }
 
@@ -1251,6 +1251,24 @@
         .location-detail h4 {
             font-size: 1.3rem;
             margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .branch-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #D4A574, #F4C430);
+            color: #FFFFFF;
+            padding: 6px 18px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 2px 10px rgba(244, 196, 48, 0.4);
+            margin-bottom: 8px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .location-detail a {
@@ -1536,10 +1554,56 @@
                 margin-bottom: 10px;
             }
         }
+
+        /* Элегантные новогодние эффекты */
+        .snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .snowflake {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.2em;
+            font-family: Arial, sans-serif;
+            animation: snow-fall linear infinite;
+            -webkit-user-select: none;
+            user-select: none;
+            opacity: 0.6;
+        }
+
+        @keyframes snow-fall {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(110vh) translateX(20px) rotate(360deg);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Тонкие новогодние эффекты -->
+    <div class="snow-container" id="snowContainer"></div>
+
     <div id="preloader" class="keks-preloader" aria-hidden="false">
         <div class="keks-inner">
             <h1 class="keks-brand">Caramel</h1>
@@ -1578,12 +1642,22 @@
     <div class="mobile-nav" id="mobileNav">
         <button class="mobile-menu-close" aria-label="Закрыть меню">&times;</button>
         <ul>
-            <li><a href="#home"><span class="nav-icon">🏠</span><span data-i18n="nav.home">Главная</span></a></li>
-            <li><a href="#about"><span class="nav-icon">📖</span><span data-i18n="nav.about">История</span></a></li>
-            <li><a href="#reviews"><span class="nav-icon">💬</span><span data-i18n="nav.reviews">Отзывы</span></a></li>
-            <li><a href="#gallery"><span class="nav-icon">🖼️</span><span data-i18n="nav.gallery">Галерея</span></a>
+            <li><a href="#home"><span class="nav-icon"><img src="home.png" alt="Главная"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.home">Главная</span></a></li>
+            <li><a href="#about"><span class="nav-icon"><img src="history-book.png" alt="История"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.about">История</span></a></li>
+            <li><a href="#reviews"><span class="nav-icon"><img src="review.png" alt="Отзывы"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.reviews">Отзывы</span></a></li>
+            <li><a href="#gallery"><span class="nav-icon"><img src="image.png" alt="Галерея"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.gallery">Галерея</span></a>
             </li>
-            <li><a href="#location"><span class="nav-icon">📍</span><span data-i18n="nav.location">Локация</span></a>
+            <li><a href="#location"><span class="nav-icon"><img src="placeholder(1).png" alt="Локация"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.location">Локация</span></a>
             </li>
         </ul>
     </div>
@@ -1684,6 +1758,7 @@
                         <div class="location-detail">
                             <img src="placeholder.png" alt="Метка локации" class="location-icon">
                             <div>
+                                <span class="branch-badge" data-i18n="location.branch1">1 филиал</span>
                                 <h4 data-i18n="location.addr1_city">г. Ургенч, Хорезмская область</h4>
                                 <p data-i18n="location.addr1_street">Улица Абулгази Баходирхана</p>
                             </div>
@@ -1691,6 +1766,7 @@
                         <div class="location-detail">
                             <img src="placeholder.png" alt="Метка локации" class="location-icon">
                             <div>
+                                <span class="branch-badge" data-i18n="location.branch2">2 филиал</span>
                                 <h4 data-i18n="location.addr2_city">г. Ургенч, Хорезмская область</h4>
                                 <p data-i18n="location.addr2_street">Улица Аль-Хорезми</p>
                             </div>
@@ -1699,14 +1775,32 @@
                             <img src="chronometer.png" alt="Часы работы" class="location-icon">
                             <div>
                                 <h4 data-i18n="location.hours">Часы работы</h4>
-                                <p data-i18n="location.hours_range">Пн–Вс: 09:00–00:00</p>
+                                <span class="branch-badge" data-i18n="location.branch1">1 филиал</span>
+                                <p data-i18n="location.hours1">Пн–Вс: 09:00–00:00</p>
+                            </div>
+                        </div>
+                        <div class="location-detail">
+                            <img src="chronometer.png" alt="Часы работы" class="location-icon">
+                            <div>
+                                <h4 data-i18n="location.hours">Часы работы</h4>
+                                <span class="branch-badge" data-i18n="location.branch2">2 филиал</span>
+                                <p data-i18n="location.hours2">Пн–Вс: 09:00–22:00</p>
                             </div>
                         </div>
                         <div class="location-detail">
                             <img src="phone-call.png" alt="Телефон" class="location-icon">
                             <div>
                                 <h4 data-i18n="location.phone">Телефон</h4>
+                                <span class="branch-badge" data-i18n="location.branch1">1 филиал</span>
                                 <p><a href="tel:+998995646644">+998 (99) 564-66-44</a></p>
+                            </div>
+                        </div>
+                        <div class="location-detail">
+                            <img src="phone-call.png" alt="Телефон" class="location-icon">
+                            <div>
+                                <h4 data-i18n="location.phone">Телефон</h4>
+                                <span class="branch-badge" data-i18n="location.branch2">2 филиал</span>
+                                <p><a href="tel:+998951886644">+998 (95) 188-66-44</a></p>
                             </div>
                         </div>
                     </div>
@@ -1743,7 +1837,30 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // Функция для создания снежинок
+        function createSnowflakes(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const symbols = ['❄', '❅'];
+            const count = 20;
+
+            for (let i = 0; i < count; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                flake.style.left = Math.random() * 100 + '%';
+                flake.style.animationDuration = (Math.random() * 8 + 10) + 's';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                flake.style.opacity = Math.random() * 0.3 + 0.2;
+                flake.style.fontSize = (Math.random() * 0.5 + 1.0) + 'em';
+                container.appendChild(flake);
+            }
+        }
+
+        // Создаем снежинки в прелоадере сразу при загрузке
         (function () {
+
             const pre = document.getElementById('preloader');
             if (!pre) return;
 
@@ -1800,13 +1917,18 @@
                     addr1_street: 'Улица Абулгази Баходирхана',
                     addr2_city: 'г. Ургенч, Хорезмская область',
                     addr2_street: 'Улица Аль-Хорезми',
-                    popup_title1: 'Карамель',
-                    popup_title2: 'Карамель (2-я точка)',
+                    popup_title1: 'Карамель - 1 филиал',
+                    popup_title2: 'Карамель - 2 филиал',
+                    branch1: '1 филиал',
+                    branch2: '2 филиал',
+                    hours1: 'Пн–Вс: 09:00–00:00',
+                    hours2: 'Пн–Вс: 09:00–22:00',
                     open_map: 'Открыть в Google Maps',
                     hours_range: 'Пн–Вс: 09:00–00:00'
                 },
                 menu: { add: 'Добавить в корзину' },
-                footer: { rights: 'Все права защищены.', made: 'Сделано Камоладдином' }
+                footer: { rights: 'Все права защищены.', made: 'Сделано Камоладдином' },
+                newyear: { mood: 'Новогоднее настроение' }
             },
             uz: {
                 nav: { home: 'Bosh sahifa', about: 'Tarix', reviews: 'Fikrlar', gallery: 'Galereya', location: 'Manzil' },
@@ -1833,18 +1955,23 @@
                     addr1_street: 'Abulg\'ozi Bahodirxon ko\'chasi',
                     addr2_city: 'Urganch shahri, Xorazm viloyati',
                     addr2_street: 'Al-Xorazmiy ko\'chasi',
-                    popup_title1: 'Karamel',
-                    popup_title2: 'Karamel (2-nuqta)',
+                    popup_title1: 'Karamel - 1 filial',
+                    popup_title2: 'Karamel - 2 filial',
+                    branch1: '1 filial',
+                    branch2: '2 filial',
+                    hours1: 'Du–Yak: 09:00–00:00',
+                    hours2: 'Du–Yak: 09:00–22:00',
                     open_map: 'Google xaritada ochish',
                     hours_range: 'Du–Yak: 09:00–00:00'
                 },
                 menu: {
                     add: 'Savatchaga qo\'shish'
                 },
-                footer: { rights: 'Barcha huquqlar himoyalangan.', made: 'Kamoladdin tomonidan yaratilgan' }
+                footer: { rights: 'Barcha huquqlar himoyalangan.', made: 'Kamoladdin tomonidan yaratilgan' },
+                newyear: { mood: 'Yangi yil kayfiyati' }
             },
             en: {
-                nav: { home: 'Home', about: 'About', reviews: 'Reviews', gallery: 'Gallery', location: 'Location' },
+                nav: { home: 'Home', about: 'Story', reviews: 'Reviews', gallery: 'Gallery', location: 'Location' },
                 hero: { subtitle: 'The art of taste since 1996', cta: 'Open menu' },
                 about: {
                     title: 'Our story',
@@ -1868,13 +1995,18 @@
                     addr1_street: 'Abulgazi Bahodirkhan street',
                     addr2_city: 'Urgench, Khorezm region',
                     addr2_street: 'Al-Khwarizmi street',
-                    popup_title1: 'Caramel',
-                    popup_title2: 'Caramel (2nd point)',
+                    popup_title1: 'Caramel - Branch 1',
+                    popup_title2: 'Caramel - Branch 2',
+                    branch1: 'Branch 1',
+                    branch2: 'Branch 2',
+                    hours1: 'Mon–Sun: 09:00–00:00',
+                    hours2: 'Mon–Sun: 09:00–22:00',
                     open_map: 'Open in Google Maps',
                     hours_range: 'Mon–Sun: 09:00–00:00'
                 },
                 menu: { add: 'Add to cart' },
-                footer: { rights: 'All rights reserved.', made: 'Made by Kamoladdin' }
+                footer: { rights: 'All rights reserved.', made: 'Made by Kamoladdin' },
+                newyear: { mood: 'Holiday spirit' }
             },
             tr: {
                 nav: { home: 'Ana sayfa', about: 'Hikaye', reviews: 'Yorumlar', gallery: 'Galeri', location: 'Konum' },
@@ -1903,13 +2035,18 @@
                     addr1_street: 'Abulgazi Bahadırhan caddesi',
                     addr2_city: 'Ürgenç, Harezm bölgesi',
                     addr2_street: 'El-Harezmi caddesi',
-                    popup_title1: 'Karamel',
-                    popup_title2: 'Karamel (2. nokta)',
+                    popup_title1: 'Karamel - Şube 1',
+                    popup_title2: 'Karamel - Şube 2',
+                    branch1: 'Şube 1',
+                    branch2: 'Şube 2',
+                    hours1: 'Pzt–Paz: 09:00–00:00',
+                    hours2: 'Pzt–Paz: 09:00–22:00',
                     open_map: 'Google Haritalar\'da aç',
                     hours_range: 'Pzt–Paz: 09:00–00:00'
                 },
                 menu: { add: 'Sepete ekle' },
-                footer: { rights: 'Tüm hakları saklıdır.', made: 'Kamoladdin tarafından yapıldı' }
+                footer: { rights: 'Tüm hakları saklıdır.', made: 'Kamoladdin tarafından yapıldı' },
+                newyear: { mood: 'Yılbaşı ruhu' }
             }
         };
         const getLang = () => localStorage.getItem('caramelLang') || 'uz';
@@ -2190,10 +2327,12 @@
             const marker2 = L.marker(caramel2).bindPopup(popupHtml('location.popup_title2', 'location.addr2_street'));
 
             const group = L.featureGroup([marker1, marker2]).addTo(map);
-            // Фиксируем камеру на первой точке с нужным зумом
-            map.setView(caramel1, 18);
+            // Подгоняем карту так, чтобы обе метки были видны с отступом
+            map.fitBounds(group.getBounds().pad(0.3));
             // Открываем по умолчанию попап первой точки
-            marker1.openPopup();
+            setTimeout(() => {
+                marker1.openPopup();
+            }, 300);
 
             // Сохраним маркеры для повторной локализации при смене языка
             window.__caramelMarkers = { marker1, marker2, popupHtml };
@@ -2233,6 +2372,8 @@
             initMap();
             initScrollAnimations();
             goToSlide(0);
+            // Создаем снежинки для основного контейнера
+            createSnowflakes('snowContainer');
             // I18N init
             const langSel = document.getElementById('langSelect');
             const langSelMobile = document.getElementById('langSelectMobile');

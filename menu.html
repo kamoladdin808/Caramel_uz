@@ -546,7 +546,7 @@
       align-items: center;
       justify-content: center;
       background: #0f0c0a;
-      z-index: 8000;
+      z-index: 10000;
       transition: opacity 0.6s ease, visibility 0.6s;
     }
 
@@ -1298,10 +1298,53 @@
         margin-bottom: 10px;
       }
     }
+
+    /* Элегантные новогодние эффекты */
+    .snow-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+
+    .snowflake {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 1.2em;
+      font-family: Arial, sans-serif;
+      animation: snow-fall linear infinite;
+      -webkit-user-select: none;
+      user-select: none;
+      opacity: 0.6;
+    }
+
+    @keyframes snow-fall {
+      0% {
+        transform: translateY(-10vh) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(110vh) translateX(20px) rotate(360deg);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 
 <body>
+  <!-- Тонкие новогодние эффекты -->
+  <div class="snow-container" id="snowContainer"></div>
+
   <div id="preloader" class="keks-preloader" aria-hidden="false">
     <div class="keks-inner">
       <h1 class="keks-brand">Caramel</h1>
@@ -6580,8 +6623,30 @@
       });
     }
 
+    // Функция для создания снежинок
+    function createSnowflakes() {
+      const container = document.getElementById('snowContainer');
+      if (!container) return;
+
+      const symbols = ['❄', '❅'];
+      const count = 20;
+
+      for (let i = 0; i < count; i++) {
+        const flake = document.createElement('div');
+        flake.className = 'snowflake';
+        flake.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        flake.style.left = Math.random() * 100 + '%';
+        flake.style.animationDuration = (Math.random() * 8 + 10) + 's';
+        flake.style.animationDelay = Math.random() * 5 + 's';
+        flake.style.opacity = Math.random() * 0.3 + 0.2;
+        flake.style.fontSize = (Math.random() * 0.5 + 1.0) + 'em';
+        container.appendChild(flake);
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
       initMenuSections();
+      createSnowflakes();
       // Язык
       const langSelectors = document.querySelectorAll('#langSelect, #langSelectMobile');
       langSelectors.forEach(sel => { sel.value = getLang(); });

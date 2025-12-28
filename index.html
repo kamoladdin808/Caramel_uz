@@ -1684,7 +1684,7 @@
     <header>
         <div class="container header-container">
             <div class="logo">
-                <img src="caramel.logo(1).PNG" alt="Caramel Cafe & Battery" class="logo-img">
+                <img src="caramel.logo.png" alt="Caramel Cafe & Battery" class="logo-img">
             </div>
             <nav>
                 <ul>
@@ -2551,9 +2551,8 @@
                 if (langSelMobile) langSelMobile.value = value;
                 applyTranslations();
                 // Перерисуем галерею (локализованные подписи)
-                const galleryContainer = document.querySelector('.gallery-grid');
+                const galleryContainer = document.querySelector('.gallery-track');
                 if (galleryContainer) {
-                    galleryContainer.innerHTML = '';
                     populateGalleryItems();
                 }
                 // Перелокализуем попапы карты без перезагрузки

@@ -1732,8 +1732,8 @@
 
     <section class="hero" id="home">
         <div class="hero-bg" aria-hidden="true"></div>
-        <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="metadata"
-            data-desktop="2853788-hd_1920_1080_24fps.mp4" data-mobile="VID_20251228_012720.mp4">
+        <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
+            poster="atmosfera_kafe.jpg">
             <source src="2853788-hd_1920_1080_24fps.mp4" type="video/mp4">
             Ваш браузер не поддерживает видео-фон.
         </video>
@@ -1741,16 +1741,27 @@
             (function () {
                 const video = document.getElementById('heroVideo');
                 const source = video.querySelector('source');
-                let currentSrc = source.src;
+                const desktopVideo = "2853788-hd_1920_1080_24fps.mp4";
+                const mobileVideo = "VID_20251228_012720.mp4";
+
                 function setVideoSource() {
                     const isMobile = window.innerWidth <= 480;
-                    const newSrc = isMobile ? video.dataset.mobile : video.dataset.desktop;
-                    if (currentSrc !== newSrc) {
-                        currentSrc = newSrc;
-                        source.src = newSrc;
+                    const newSrc = isMobile ? mobileVideo : desktopVideo;
+
+                    if (source.getAttribute('src') !== newSrc) {
+                        source.setAttribute('src', newSrc);
                         video.load();
                     }
+
+                    // Always try to play on init/resize for iOS
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => {
+                            console.log("Auto-play prevented, waiting for interaction:", e);
+                        });
+                    }
                 }
+
                 setVideoSource();
                 let resizeTimeout;
                 window.addEventListener('resize', function () {
@@ -1801,7 +1812,7 @@
                     </div>
                 </div>
                 <div class="about-image">
-                    <img src="caramel_fon.png" alt="Caramel Cafe" loading="lazy">
+                    <img src="atmosfera_kafe.jpg" alt="Caramel Cafe">
                 </div>
             </div>
         </div>
@@ -2199,7 +2210,7 @@
 
         const galleryItems = [
             {
-                image: "caramel_fon.png",
+                image: "atmosfera_kafe.jpg",
                 title: "Внешний вид нашего кафе",
                 title_uz: "Kafemizning tashqi ko'rinishi",
                 title_tr: "Kafemizin dış görünümü",
@@ -2300,7 +2311,7 @@
                 const galleryItem = document.createElement('div');
                 galleryItem.className = 'gallery-item';
                 galleryItem.innerHTML = `
-                    <img src="${item.image}" alt="${title}" loading="lazy">
+                    <img src="${item.image}" alt="${title}">
                     <div class="gallery-overlay" style="opacity: 1; background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.7)); padding: 30px;">
                         <h4 style="font-size: 1.5rem;">${title}</h4>
                     </div>

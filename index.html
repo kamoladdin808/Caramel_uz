@@ -1733,7 +1733,7 @@
     <section class="hero" id="home">
         <div class="hero-bg" aria-hidden="true"></div>
         <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
-            poster="atmosfera_kafe.jpg">
+            data-desktop="2853788-hd_1920_1080_24fps.mp4" data-mobile="VID_20251228_012720.mp4">
             <source src="2853788-hd_1920_1080_24fps.mp4" type="video/mp4">
             Ваш браузер не поддерживает видео-фон.
         </video>
@@ -1741,12 +1741,10 @@
             (function () {
                 const video = document.getElementById('heroVideo');
                 const source = video.querySelector('source');
-                const desktopVideo = "2853788-hd_1920_1080_24fps.mp4";
-                const mobileVideo = "VID_20251228_012720.mp4";
 
                 function setVideoSource() {
                     const isMobile = window.innerWidth <= 480;
-                    const newSrc = isMobile ? mobileVideo : desktopVideo;
+                    const newSrc = isMobile ? video.dataset.mobile : video.dataset.desktop;
 
                     if (source.getAttribute('src') !== newSrc) {
                         source.setAttribute('src', newSrc);
@@ -1812,7 +1810,7 @@
                     </div>
                 </div>
                 <div class="about-image">
-                    <img src="atmosfera_kafe.jpg" alt="Caramel Cafe">
+                    <img src="caramel_fon.png" alt="Caramel Cafe">
                 </div>
             </div>
         </div>
@@ -2206,11 +2204,10 @@
             });
         });
 
-        // Удалено: список блюд для главной страницы не используется
 
         const galleryItems = [
             {
-                image: "atmosfera_kafe.jpg",
+                image: "caramel_fon.png",
                 title: "Внешний вид нашего кафе",
                 title_uz: "Kafemizning tashqi ko'rinishi",
                 title_tr: "Kafemizin dış görünümü",
@@ -2471,7 +2468,6 @@
 
         setInterval(nextSlide, 5000);
 
-        // Удалено: initMenuCategories (на главной не используется)
 
         function initMap() {
             // Координаты двух точек «Карамель»

@@ -1740,14 +1740,19 @@
         <script>
             (function () {
                 const video = document.getElementById('heroVideo');
-                const source = video.querySelector('source');
 
                 function setVideoSource() {
                     const isMobile = window.innerWidth <= 480;
                     const newSrc = isMobile ? video.dataset.mobile : video.dataset.desktop;
 
-                    if (source.getAttribute('src') !== newSrc) {
-                        source.setAttribute('src', newSrc);
+                    // Check if we need to switch (comparing filenames can be tricky with absolute URLs, 
+                    // so we check if the current src attribute matches what we want to set)
+                    // Note: video.src returns absolute URL, so getAttribute is safer for relative path comparison if set via attribute
+                    // But dynamically set .src property isn't always reflected in getAttribute.
+                    // Safest is to check if the currentSrc ends with the newSrc filename.
+
+                    if (!video.currentSrc.endsWith(newSrc)) {
+                        video.src = newSrc;
                         video.load();
                     }
 
@@ -1755,7 +1760,8 @@
                     const playPromise = video.play();
                     if (playPromise !== undefined) {
                         playPromise.catch(e => {
-                            console.log("Auto-play prevented, waiting for interaction:", e);
+                            // Valid error on Low Power Mode or if user hasn't interacted
+                            console.log("Auto-play warning:", e);
                         });
                     }
                 }

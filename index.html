@@ -1735,43 +1735,54 @@
         <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
             data-desktop="2853788-hd_1920_1080_24fps.mp4" data-mobile="VID_20251228_012720.mp4">
             <source src="2853788-hd_1920_1080_24fps.mp4" type="video/mp4">
-            Ваш браузер не поддерживает видео-фон.
         </video>
         <script>
             (function () {
                 const video = document.getElementById('heroVideo');
 
                 function setVideoSource() {
+                    if (!video) return;
+
                     const isMobile = window.innerWidth <= 480;
                     const newSrc = isMobile ? video.dataset.mobile : video.dataset.desktop;
 
-                    // Check if we need to switch (comparing filenames can be tricky with absolute URLs, 
-                    // so we check if the current src attribute matches what we want to set)
-                    // Note: video.src returns absolute URL, so getAttribute is safer for relative path comparison if set via attribute
-                    // But dynamically set .src property isn't always reflected in getAttribute.
-                    // Safest is to check if the currentSrc ends with the newSrc filename.
-
+                    // Only update if src changed to avoid flickering
                     if (!video.currentSrc.endsWith(newSrc)) {
                         video.src = newSrc;
                         video.load();
                     }
 
-                    // Always try to play on init/resize for iOS
+                    // Force attributes for iOS
+                    video.setAttribute('playsinline', '');
+                    video.muted = true;
+
                     const playPromise = video.play();
                     if (playPromise !== undefined) {
                         playPromise.catch(e => {
-                            // Valid error on Low Power Mode or if user hasn't interacted
                             console.log("Auto-play warning:", e);
+                            // Fallback: try to mute again and play
+                            video.muted = true;
+                            video.play().catch(e2 => console.log("Retry play failed:", e2));
                         });
                     }
                 }
 
+                // Initial call
                 setVideoSource();
+
+                // Optimized resize listener
                 let resizeTimeout;
                 window.addEventListener('resize', function () {
                     clearTimeout(resizeTimeout);
                     resizeTimeout = setTimeout(setVideoSource, 300);
                 });
+
+                // Extra check for iOS "low power mode" or other interruptions
+                document.addEventListener('touchstart', function () {
+                    if (video.paused) {
+                        video.play().catch(() => { });
+                    }
+                }, { once: true, passive: true });
             })();
         </script>
         <div class="hero-overlay" aria-hidden="true"></div>

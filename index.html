@@ -1,0 +1,2619 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caramel | Cafe & Bakery - Семейная кондитерская с 1996 года</title>
+    <meta name="description"
+        content="Caramel Cafe & Battery - семейная кондитерская в Ургенче. Свежая выпечка, авторские десерты, кофе и уютная атмосфера. Заказывайте онлайн!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="icon" type="image/png" href="caramel.logo.png">
+    <style>
+        :root {
+            --chocolate: #4B2E1E;
+            --caramel: #CDA676;
+            --milk-white: #FAF6F2;
+            --light-caramel: #E8D4B9;
+            --dark-brown: #3A2418;
+            --gold: #D4AF37;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--milk-white);
+            color: var(--chocolate);
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(205, 166, 118, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(205, 166, 118, 0.1) 0%, transparent 20%);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: transparent;
+            color: var(--milk-white);
+            position: fixed;
+            width: 100%;
+            height: 100px;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+            transition: all 0.4s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(75, 46, 30, 0.95);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--caramel);
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+            position: relative;
+            bottom: 25px;
+
+        }
+
+        .logo::after {
+            display: none;
+            content: '';
+        }
+
+        .logo span {
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin-top: 3px;
+            color: var(--milk-white);
+            text-transform: uppercase;
+        }
+
+        .logo img.logo-img {
+            display: block;
+            height: 150px;
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            -webkit-filter: brightness(0) invert(1);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            position: relative;
+            bottom: 25px;
+        }
+
+        nav li {
+            margin-left: 40px;
+            position: relative;
+        }
+
+        nav a {
+            color: var(--milk-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--caramel);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::before {
+            width: 100%;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            color: var(--milk-white);
+            font-size: 24px;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-icon img.cart-img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+            filter: brightness(0) invert(1);
+        }
+
+        .cart-icon:hover {
+            color: var(--caramel);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--caramel);
+            color: var(--milk-white);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .cart-count.pop {
+            animation: pop 0.3s ease;
+        }
+
+        .lang-select {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--milk-white);
+            border: 1.5px solid rgba(255, 255, 255, 0.45);
+            border-radius: 24px;
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            margin-left: 18px;
+            outline: none;
+            height: 36px;
+            line-height: 36px;
+            position: relative;
+            bottom: 25px;
+            /* выравнивание по навигации */
+            backdrop-filter: blur(4px);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .lang-select:hover {
+            border-color: var(--caramel);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .lang-select option {
+            color: #333;
+        }
+
+        .mobile-nav .lang-select {
+            width: 100%;
+            margin-bottom: 15px;
+            position: static;
+            bottom: auto;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background-color: var(--milk-white);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 2000;
+            transition: right 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-modal.active {
+            right: 0;
+        }
+
+        .cart-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-caramel);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            margin: 0;
+            color: var(--chocolate);
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--chocolate);
+            transition: color 0.3s;
+        }
+
+        .close-cart:hover {
+            color: var(--caramel);
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-caramel);
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--chocolate);
+        }
+
+        .cart-item-price {
+            color: var(--caramel);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid var(--caramel);
+            background: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--caramel);
+            transition: all 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background-color: var(--caramel);
+            color: var(--milk-white);
+        }
+
+        .quantity-display {
+            margin: 0 10px;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .remove-item {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .remove-item:hover {
+            color: var(--chocolate);
+        }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid var(--light-caramel);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--chocolate);
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .clear-cart {
+            flex: 1;
+            background: none;
+            border: 1px solid var(--chocolate);
+            color: var(--chocolate);
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .clear-cart:hover {
+            background-color: var(--chocolate);
+            color: var(--milk-white);
+        }
+
+        .checkout-btn {
+            flex: 2;
+            background: linear-gradient(135deg, var(--caramel), var(--gold));
+            color: var(--milk-white);
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(205, 166, 118, 0.4);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--caramel);
+            color: var(--milk-white);
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 3000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.active {
+            transform: translateX(0);
+        }
+
+        .keks-preloader {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f0c0a;
+            z-index: 10000;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        .keks-inner {
+            text-align: center;
+            color: rgba(250, 246, 242, 0.95);
+        }
+
+        .keks-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 72px;
+            letter-spacing: 2px;
+            margin: 0 0 6px;
+            color: rgba(220, 220, 220, 0.95);
+            font-weight: 700;
+        }
+
+        .keks-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: rgba(220, 220, 220, 0.55);
+            margin-bottom: 18px;
+            letter-spacing: 4px;
+        }
+
+        .keks-dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .keks-dots .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--caramel);
+            opacity: 0.95;
+            transform: translateY(0);
+            animation: dot-pulse 1.2s infinite ease-in-out;
+        }
+
+        .keks-dots .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .keks-dots .dot:nth-child(2) {
+            animation-delay: 0.12s;
+        }
+
+        .keks-dots .dot:nth-child(3) {
+            animation-delay: 0.24s;
+        }
+
+        @keyframes dot-pulse {
+            0% {
+                transform: translateY(0);
+                opacity: 0.9;
+            }
+
+            50% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 0.9;
+            }
+        }
+
+        .keks-preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--milk-white);
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+            width: 30px;
+            height: 30px;
+            position: relative;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: var(--dark-brown);
+            z-index: 1002;
+            transition: right 0.4s ease;
+            padding: 80px 30px 30px;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-nav.active {
+            right: 0;
+        }
+
+        .mobile-nav ul {
+            list-style: none;
+        }
+
+        .mobile-nav li {
+            margin-bottom: 20px;
+        }
+
+        .mobile-nav a {
+            color: var(--milk-white);
+            text-decoration: none;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .mobile-nav a span.nav-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .mobile-nav a span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mobile-nav a:hover {
+            color: var(--caramel);
+            padding-left: 10px;
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--milk-white);
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(205, 166, 118, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(205, 166, 118, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, var(--chocolate) 0%, var(--dark-brown) 100%);
+            z-index: -3;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            pointer-events: none;
+            filter: saturate(0.9) brightness(0.7);
+        }
+
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(10, 6, 4, 0.35), rgba(10, 6, 4, 0.45));
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 20px;
+            text-align: center;
+            color: var(--milk-white);
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s forwards 0.5s;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .hero h1::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background: var(--caramel);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s forwards 0.8s;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--caramel), var(--gold));
+            color: var(--milk-white);
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.4s;
+            border: none;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s forwards 1.1s;
+            box-shadow: 0 5px 15px rgba(205, 166, 118, 0.4);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(205, 166, 118, 0.6);
+        }
+
+        section {
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            display: inline-block;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--caramel), transparent);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title p {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .about {
+            background-color: var(--milk-white);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-text {
+            padding-right: 20px;
+        }
+
+        .about-text h3 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .about-text h3::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background-color: var(--caramel);
+            bottom: -10px;
+            left: 0;
+        }
+
+        .about-text p {
+            margin-bottom: 25px;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            margin-top: 40px;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .timeline-year {
+            font-weight: bold;
+            color: var(--caramel);
+            min-width: 80px;
+            margin-right: 20px;
+            font-size: 1.1rem;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .about-image {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transform: perspective(1000px) rotateY(-5deg);
+            transition: transform 0.5s;
+        }
+
+        .about-image:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .menu {
+            background: linear-gradient(135deg, var(--light-caramel) 0%, var(--milk-white) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(205, 166, 118, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .menu-categories {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .category-btn {
+            background: none;
+            border: 2px solid var(--caramel);
+            padding: 12px 30px;
+            margin: 0 10px 10px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--chocolate);
+            cursor: pointer;
+            transition: all 0.4s;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--caramel), transparent);
+            transition: all 0.6s;
+            z-index: -1;
+        }
+
+        .category-btn.active,
+        .category-btn:hover {
+            color: var(--milk-white);
+            background: var(--caramel);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(205, 166, 118, 0.4);
+        }
+
+        .menu-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-item {
+            background-color: var(--milk-white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .menu-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .menu-item-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .menu-item-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 70%, rgba(0, 0, 0, 0.3));
+        }
+
+        .menu-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .menu-item:hover .menu-item-image img {
+            transform: scale(1.1);
+        }
+
+        .menu-item-content {
+            padding: 20px;
+        }
+
+        .menu-item-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .menu-item-title h3 {
+            font-size: 1.4rem;
+        }
+
+        .menu-item-price {
+            color: var(--caramel);
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .menu-item p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .menu-item-order {
+            display: inline-block;
+            background: var(--caramel);
+            color: var(--milk-white);
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid var(--caramel);
+            cursor: pointer;
+        }
+
+        .menu-item-order:hover {
+            background: transparent;
+            color: var(--caramel);
+        }
+
+        .gallery {
+            background-color: var(--milk-white);
+            position: relative;
+        }
+
+        .gallery::before {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(205, 166, 118, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .gallery-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .gallery-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            width: 100%;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            flex: 0 0 100%;
+            height: 600px;
+            cursor: pointer;
+            background-color: #eee;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            transition: transform 0.8s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: var(--chocolate);
+            font-size: 20px;
+        }
+
+        .gallery-nav-btn:hover {
+            background: var(--caramel);
+            color: white;
+            box-shadow: 0 6px 18px rgba(205, 166, 118, 0.3);
+        }
+
+        .gallery-prev {
+            left: 20px;
+        }
+
+        .gallery-next {
+            right: 20px;
+        }
+
+        .gallery-pagination {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .gallery-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #E8D4B9;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gallery-dot.active {
+            background: var(--caramel);
+            transform: scale(1.3);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(75, 46, 30, 0.8));
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 15px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay h4 {
+            color: var(--milk-white);
+            font-size: 1.1rem;
+        }
+
+        .reviews {
+            background: linear-gradient(135deg, var(--light-caramel) 0%, var(--milk-white) 100%);
+            position: relative;
+        }
+
+        .reviews-slider {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reviews-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .review {
+            min-width: 100%;
+            padding: 30px;
+            background: var(--milk-white);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .review-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .review-author {
+            font-weight: 600;
+            color: var(--caramel);
+        }
+
+        .slider-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-caramel);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .slider-dot.active {
+            background: var(--caramel);
+            transform: scale(1.2);
+        }
+
+        .location {
+            background: linear-gradient(135deg, var(--chocolate) 0%, var(--dark-brown) 100%);
+            color: var(--milk-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .location::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(205, 166, 118, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .location .section-title h2 {
+            color: var(--milk-white);
+        }
+
+        .location .section-title h2::after {
+            background: linear-gradient(90deg, transparent, var(--caramel), transparent);
+        }
+
+        .location .section-title p {
+            color: var(--milk-white) !important;
+            opacity: 0.95;
+        }
+
+        .location-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .location-info h3 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .location-info h3::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background-color: var(--caramel);
+            bottom: -10px;
+            left: 0;
+        }
+
+        .location-details {
+            margin-bottom: 40px;
+        }
+
+        .location-detail {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .location-detail i {
+            color: var(--caramel);
+            margin-right: 20px;
+            font-size: 1.5rem;
+            margin-top: 3px;
+        }
+
+        .location-detail img.location-icon {
+            width: 36px;
+            height: 36px;
+            margin-right: 20px;
+            margin-top: 3px;
+            object-fit: contain;
+            display: inline-block;
+        }
+
+        .location-detail h4 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .branch-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #D4A574, #F4C430);
+            color: #FFFFFF;
+            padding: 6px 18px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 2px 10px rgba(244, 196, 48, 0.4);
+            margin-bottom: 8px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .location-detail a {
+            color: var(--milk-white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .location-detail a:hover {
+            color: var(--caramel);
+        }
+
+        .location-map {
+            height: 450px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .copyright {
+            background: linear-gradient(135deg, var(--chocolate) 0%, var(--dark-brown) 100%);
+            color: var(--milk-white);
+            text-align: center;
+            padding-top: 20px;
+            height: 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .copyright a:hover {
+            opacity: 0.8;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(30px, -50px) rotate(120deg);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: var(--milk-white);
+            font-size: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            background: var(--caramel);
+        }
+
+        @media (max-width: 1200px) {
+
+            .about-content,
+            .location-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .about-text {
+                padding-right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                height: 70px;
+            }
+
+            .header-container {
+                position: relative;
+                height: 70px;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .logo {
+                position: static;
+                bottom: auto;
+            }
+
+            .logo img.logo-img {
+                height: 80px;
+            }
+
+            .lang-select {
+                position: static;
+                bottom: auto;
+                margin-left: auto;
+                margin-right: 10px;
+                padding: 5px 10px;
+                font-size: 0.8rem;
+                height: 32px;
+                line-height: 32px;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+                position: static;
+                align-items: center;
+                justify-content: center;
+                width: 44px;
+                height: 44px;
+                font-size: 22px;
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                border-radius: 8px;
+                backdrop-filter: blur(4px);
+                transition: background 0.2s, transform 0.15s;
+                flex-shrink: 0;
+            }
+
+            .mobile-menu-btn:active {
+                transform: scale(0.95);
+            }
+
+            .section-title p {
+                font-size: 1.1rem;
+            }
+
+            .menu-items {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+            }
+
+            .gallery-item {
+                height: 350px;
+            }
+
+            .gallery-nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .cart-modal {
+                width: 100%;
+                right: -100%;
+            }
+
+            .cart-icon {
+                margin-left: 20px;
+            }
+
+            html,
+            body {
+                overflow-x: hidden;
+            }
+
+            .mobile-nav {
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                padding: 80px 30px 30px;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .mobile-nav.active {
+                right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                height: 100vh;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .menu-categories {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .category-btn {
+                width: 200px;
+                margin-bottom: 10px;
+            }
+
+            .location-detail {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .location-detail i {
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Элегантные новогодние эффекты */
+        .snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .snowflake {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.2em;
+            font-family: Arial, sans-serif;
+            animation: snow-fall linear infinite;
+            -webkit-user-select: none;
+            user-select: none;
+            opacity: 0.6;
+        }
+
+        @keyframes snow-fall {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(110vh) translateX(20px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Тонкие новогодние эффекты -->
+    <div class="snow-container" id="snowContainer"></div>
+
+    <div id="preloader" class="keks-preloader" aria-hidden="false">
+        <div class="keks-inner">
+            <h1 class="keks-brand">Caramel</h1>
+            <div class="keks-sub">Cake and Bakery</div>
+            <div class="keks-dots" aria-hidden="true">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+    </div>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="caramel.logo.png" alt="Caramel Cafe & Battery" class="logo-img">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home" data-i18n="nav.home">Главная</a></li>
+                    <li><a href="#about" data-i18n="nav.about">История</a></li>
+                    <li><a href="#reviews" data-i18n="nav.reviews">Отзывы</a></li>
+                    <li><a href="#gallery" data-i18n="nav.gallery">Галерея</a></li>
+                    <li><a href="#location" data-i18n="nav.location">Локация</a></li>
+                </ul>
+            </nav>
+            <select id="langSelect" class="lang-select" aria-label="Language">
+                <option value="ru">RU</option>
+                <option value="uz">UZ</option>
+                <option value="en">EN</option>
+                <option value="tr">TR</option>
+            </select>
+            <button class="mobile-menu-btn" aria-label="Открыть меню">☰</button>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <button class="mobile-menu-close" aria-label="Закрыть меню">&times;</button>
+        <ul>
+            <li><a href="#home"><span class="nav-icon"><img src="home.png" alt="Главная"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.home">Главная</span></a></li>
+            <li><a href="#about"><span class="nav-icon"><img src="history-book.png" alt="История"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.about">История</span></a></li>
+            <li><a href="#reviews"><span class="nav-icon"><img src="review.png" alt="Отзывы"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.reviews">Отзывы</span></a></li>
+            <li><a href="#gallery"><span class="nav-icon"><img src="image.png" alt="Галерея"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.gallery">Галерея</span></a>
+            </li>
+            <li><a href="#location"><span class="nav-icon"><img src="placeholder(1).png" alt="Локация"
+                            style="width: 24px; height: 24px; object-fit: contain;"></span><span
+                        data-i18n="nav.location">Локация</span></a>
+            </li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <section class="hero" id="home">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto"
+            data-desktop="2853788-hd_1920_1080_24fps.mp4" data-mobile="VID_20251228_012720.mp4">
+            <source src="2853788-hd_1920_1080_24fps.mp4" type="video/mp4">
+        </video>
+        <script>
+            (function () {
+                const video = document.getElementById('heroVideo');
+
+                function setVideoSource() {
+                    if (!video) return;
+
+                    const isMobile = window.innerWidth <= 480;
+                    const newSrc = isMobile ? video.dataset.mobile : video.dataset.desktop;
+
+                    // Only update if src changed to avoid flickering
+                    if (!video.currentSrc.endsWith(newSrc)) {
+                        video.src = newSrc;
+                        video.load();
+                    }
+
+                    // Force attributes for iOS
+                    video.setAttribute('playsinline', '');
+                    video.muted = true;
+
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => {
+                            console.log("Auto-play warning:", e);
+                            // Fallback: try to mute again and play
+                            video.muted = true;
+                            video.play().catch(e2 => console.log("Retry play failed:", e2));
+                        });
+                    }
+                }
+
+                // Initial call
+                setVideoSource();
+
+                // Optimized resize listener
+                let resizeTimeout;
+                window.addEventListener('resize', function () {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(setVideoSource, 300);
+                });
+
+                // Extra check for iOS "low power mode" or other interruptions
+                document.addEventListener('touchstart', function () {
+                    if (video.paused) {
+                        video.play().catch(() => { });
+                    }
+                }, { once: true, passive: true });
+            })();
+        </script>
+        <div class="hero-overlay" aria-hidden="true"></div>
+        <div class="hero-content">
+            <h1>Caramel</h1>
+            <p data-i18n="hero.subtitle">Искусство вкуса с 1996 года</p>
+            <a href="menu.html" class="btn" data-i18n="hero.cta">Открыть меню</a>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-i18n="about.title">Наша история</h2>
+                <p data-i18n="about.subtitle">Семейная традиция, которая началась с любви к сладостям и выросла в сеть
+                    уютных кафе</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3 data-i18n="about.headline">Семейная традиция с 1996 года</h3>
+                    <p data-i18n="about.p1">Сеть кондитерских Karamel — это семейный бизнес, начавшийся с увлечённой
+                        кондитера Марьям
+                        Матякубовой. В 1996 году она начала выпекать сладости для друзей, родственников и соседей дома.
+                    </p>
+                    <p data-i18n="about.p2">В 2000 году был открыт первый магазин под названием «Хушнудбек пишиpиклар».
+                        В 2008 году к бизнесу
+                        присоединились сыновья. Старший, Исмаилов Хушнудбек, разработал финансовую модель, а второй сын,
+                        Исмаилов Исмоил, внедрял новые идеи.</p>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-year">2013</div>
+                            <div class="timeline-content" data-i18n="about.timeline2013">Появился бренд Karamel,
+                                предложенный Исмаиловым Хушнудбеком. Бренд стал не только
+                                любимыми сладостями, но и сетью кафе с горячими и холодными блюдами.</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2020</div>
+                            <div class="timeline-content" data-i18n="about.timeline2020">Открыта современная фабрика
+                                площадью 1 200 кв. м. Сегодня сеть насчитывает более
+                                3 магазинов в Хорезмской области Узбекистана, и работает свыше 61 специалиста.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="caramel_fon.png" alt="Caramel Cafe">
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="reviews" id="reviews">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-i18n="reviews.title">Отзывы клиентов</h2>
+                <p data-i18n="reviews.subtitle">Что говорят наши гости о Caramel Cafe</p>
+            </div>
+            <div class="reviews-slider">
+                <div class="reviews-container" id="reviewsContainer">
+                </div>
+                <div class="slider-nav" id="sliderNav">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-i18n="gallery.title">Галерея</h2>
+                <p data-i18n="gallery.subtitle">Загляните в атмосферу нашего кафе и оцените красоту наших десертов</p>
+            </div>
+            <div class="gallery-container">
+                <div class="gallery-track">
+                </div>
+                <button class="gallery-nav-btn gallery-prev" aria-label="Previous slide">❮</button>
+                <button class="gallery-nav-btn gallery-next" aria-label="Next slide">❯</button>
+            </div>
+            <div class="gallery-pagination"></div>
+        </div>
+    </section>
+
+    <section class="location" id="location">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-i18n="location.title">Наши локации</h2>
+                <p data-i18n="location.subtitle">Приходите в гости и насладитесь уютной атмосферой</p>
+            </div>
+            <div class="location-content">
+                <div class="location-info">
+                    <h3 data-i18n="location.visit_us">Посетите нас</h3>
+                    <div class="location-details">
+                        <div class="location-detail">
+                            <img src="placeholder.png" alt="Метка локации" class="location-icon">
+                            <div>
+                                <span class="branch-badge" data-i18n="location.branch1">1 филиал</span>
+                                <h4 data-i18n="location.addr1_city">г. Ургенч, Хорезмская область</h4>
+                                <p data-i18n="location.addr1_street">Улица Абулгази Баходирхана</p>
+                            </div>
+                        </div>
+                        <div class="location-detail">
+                            <img src="placeholder.png" alt="Метка локации" class="location-icon">
+                            <div>
+                                <span class="branch-badge" data-i18n="location.branch2">2 филиал</span>
+                                <h4 data-i18n="location.addr2_city">г. Ургенч, Хорезмская область</h4>
+                                <p data-i18n="location.addr2_street">Улица Аль-Хорезми</p>
+                            </div>
+                        </div>
+                        <div class="location-detail">
+                            <img src="chronometer.png" alt="Часы работы" class="location-icon">
+                            <div>
+                                <h4 data-i18n="location.hours">Часы работы</h4>
+                                <span class="branch-badge" data-i18n="location.branch1">1 филиал</span>
+                                <p data-i18n="location.hours1">Пн–Вс: 08:00–00:00</p>
+                            </div>
+                        </div>
+                        <div class="location-detail">
+                            <img src="chronometer.png" alt="Часы работы" class="location-icon">
+                            <div>
+                                <h4 data-i18n="location.hours">Часы работы</h4>
+                                <span class="branch-badge" data-i18n="location.branch2">2 филиал</span>
+                                <p data-i18n="location.hours2">Пн–Вс: 08:00–23:00</p>
+                            </div>
+                        </div>
+                        <div class="location-detail">
+                            <img src="phone-call.png" alt="Телефон" class="location-icon">
+                            <div>
+                                <h4 data-i18n="location.phone">Телефон</h4>
+                                <span class="branch-badge" data-i18n="location.branch1">1 филиал</span>
+                                <p><a href="tel:+998995646644">+998 (99) 564-66-44</a></p>
+                            </div>
+                        </div>
+                        <div class="location-detail">
+                            <img src="phone-call.png" alt="Телефон" class="location-icon">
+                            <div>
+                                <h4 data-i18n="location.phone">Телефон</h4>
+                                <span class="branch-badge" data-i18n="location.branch2">2 филиал</span>
+                                <p><a href="tel:+998951886644">+998 (95) 188-66-44</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/caramel_urgench/" target="_blank" rel="noopener noreferrer"
+                        class="btn" data-i18n="location.instagram">Следите за нами в Instagram</a>
+                </div>
+                <div class="location-map">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="copyright">
+        <p>
+            &copy; 2025 Caramel Cafe and Bakery.
+            <span data-i18n="footer.rights">Все права защищены.</span>
+            |
+            <a href="https://www.instagram.com/golden_pixel.dev/" target="_blank" rel="noopener noreferrer"
+                style="color: var(--caramel); text-decoration: none; transition: opacity 0.3s; display: inline-flex; align-items: center; gap: 4px;">
+                <img src="instagram.png" alt="Instagram"
+                    style="height: 14px; width: 14px; filter: sepia(1) saturate(5) hue-rotate(-15deg) brightness(0.85);">
+                <span data-i18n="footer.made">Сделано Golden Pixel</span>
+            </a>
+        </p>
+    </div>
+
+    <div class="modal" id="galleryModal">
+        <button class="close-modal" aria-label="Закрыть">&times;</button>
+        <div class="modal-content">
+            <img src="" alt="Gallery Image">
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Функция для создания снежинок
+        function createSnowflakes(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const symbols = ['❄', '❅'];
+            const count = 20;
+
+            for (let i = 0; i < count; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                flake.style.left = Math.random() * 100 + '%';
+                flake.style.animationDuration = (Math.random() * 8 + 10) + 's';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                flake.style.opacity = Math.random() * 0.3 + 0.2;
+                flake.style.fontSize = (Math.random() * 0.5 + 1.0) + 'em';
+                container.appendChild(flake);
+            }
+        }
+
+        // Создаем снежинки в прелоадере сразу при загрузке
+        (function () {
+
+            const pre = document.getElementById('preloader');
+            if (!pre) return;
+
+            setTimeout(() => {
+                pre.classList.add('hidden');
+                setTimeout(() => {
+                    if (pre && pre.parentNode) pre.parentNode.removeChild(pre);
+                }, 700);
+            }, 2000);
+        })();
+
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function () {
+            document.getElementById('mobileNav').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        document.querySelector('.mobile-menu-close').addEventListener('click', function () {
+            document.getElementById('mobileNav').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        document.getElementById('overlay').addEventListener('click', function () {
+            document.getElementById('mobileNav').classList.remove('active');
+            this.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // ===== I18N (RU/UZ/EN/TR) =====
+        const I18N = {
+            ru: {
+                nav: { home: 'Главная', about: 'История', reviews: 'Отзывы', gallery: 'Галерея', location: 'Локация' },
+                hero: { subtitle: 'Искусство вкуса с 1996 года', cta: 'Открыть меню' },
+                about: {
+                    title: 'Наша история',
+                    subtitle: 'Семейная традиция, которая началась с любви к сладостям и выросла в сеть уютных кафе',
+                    headline: 'Семейная традиция с 1996 года',
+                    p1: 'Сеть кондитерских Karamel — это семейный бизнес, начавшийся с увлечённой кондитера Марьям Матякубовой. В 1996 году она начала выпекать сладости для друзей, родственников и соседей дома.',
+                    p2: 'В 2000 году был открыт первый магазин под названием «Хушнудбек пишиpиклар». В 2008 году к бизнесу присоединились сыновья. Старший, Исмаилов Хушнудбек, разработал финансовую модель, а второй сын, Исмаилов Исмоил, внедрял новые идеи.',
+                    timeline2013: 'Появился бренд Karamel, предложенный Исмаиловым Хушнудбеком. Бренд стал не только любимыми сладостями, но и сетью кафе с горячими и холодными блюдами.',
+                    timeline2020: 'Открыта современная фабрика площадью 1 200 кв. м. Сегодня сеть насчитывает более 3 магазинов в Хорезмской области Узбекистана, и работает свыше 61 специалиста.'
+                },
+                reviews: { title: 'Отзывы клиентов', subtitle: 'Что говорят наши гости о Caramel Cafe' },
+                gallery: { title: 'Галерея', subtitle: 'Загляните в атмосферу нашего кафе и оцените красоту наших десертов' },
+                location: {
+                    title: 'Наши локации',
+                    subtitle: 'Приходите в гости и насладитесь уютной атмосферой',
+                    visit_us: 'Посетите нас',
+                    hours: 'Часы работы',
+                    phone: 'Телефон',
+                    instagram: 'Следите за нами в Instagram',
+                    addr1_city: 'г. Ургенч, Хорезмская область',
+                    addr1_street: 'Улица Абулгази Баходирхана',
+                    addr2_city: 'г. Ургенч, Хорезмская область',
+                    addr2_street: 'Улица Аль-Хорезми',
+                    popup_title1: 'Карамель - 1 филиал',
+                    popup_title2: 'Карамель - 2 филиал',
+                    branch1: '1 филиал',
+                    branch2: '2 филиал',
+                    hours1: 'Пн–Вс: 08:00–00:00',
+                    hours2: 'Пн–Вс: 08:00–23:00',
+                    open_map: 'Открыть в Google Maps',
+                    hours_range: 'Пн–Вс: 08:00–00:00'
+                },
+                menu: { add: 'Добавить в корзину' },
+                footer: { rights: 'Все права защищены.', made: 'Сделано Golden Pixel' },
+                newyear: { mood: 'Новогоднее настроение' }
+            },
+            uz: {
+                nav: { home: 'Bosh sahifa', about: 'Tarix', reviews: 'Fikrlar', gallery: 'Galereya', location: 'Manzil' },
+                hero: { subtitle: '1996-yildan beri taʼm sanʼati', cta: 'Menyuni ochish' },
+                about: {
+                    title: 'Bizning tariximiz',
+                    subtitle: 'Shirinlikka bo\'lgan muhabbatdan boshlangan va qulay kafelarga aylangan an\'ana',
+                    headline: '1996-yildan oilaviy an\'ana',
+                    p1: 'Karamel qandolatlar tarmog\'i — bu oila biznesi.Uni shirinliklarga oshno bo\'lgan Maryam Matyakubova boshlab bergan. 1996-yilda u uyida do\'stlari va qo\'shnilari uchun pishiriqlar tayyorlashni boshlagan.',
+                    p2: '2000-yilda «Xushnudbek pishiriqlar» nomli ilk do\'kon ochildi. 2008-yilda biznesga o\'g\'illari qo\'shildi: kattasi, Ismoilov Xushnudbek, moliyaviy modelni ishlab chiqdi, ikkinchi o\'g\'il, Ismoilov Ismoil, yangi g\'oyalarni joriy etdi.',
+                    timeline2013: 'Ismoilov Xushnudbek taklif qilgan Karamel brendi paydo bo\'ldi. Endi bu nafaqat sevimli shirinliklar, balki issiq va sovuq taomlar taqdim etiladigan kafe tarmog\'i hamdir.',
+                    timeline2020: '1 200 kv.m zamonaviy fabrika ishga tushirildi. Bugun tarmoq Xorazm viloyatida 3 ta do\'konga ega va 61 dan ortiq mutaxassis ishlaydi.'
+                },
+                reviews: { title: 'Mijozlar fikri', subtitle: 'Mehmonlarimiz Caramel Cafe haqida nima deyishadi' },
+                gallery: { title: 'Galereya', subtitle: 'Kafemiz muhitini his eting va desertlarimizni tomosha qiling' },
+                location: {
+                    title: 'Manzillarimiz',
+                    subtitle: 'Bizga tashrif buyuring va qulay muhitdan rohatlaning',
+                    visit_us: 'Bizga tashrif buyuring',
+                    hours: 'Ish vaqti',
+                    phone: 'Telefon',
+                    instagram: 'Instagram\'da kuzating',
+                    addr1_city: 'Urganch shahri, Xorazm viloyati',
+                    addr1_street: 'Abulg\'ozi Bahodirxon ko\'chasi',
+                    addr2_city: 'Urganch shahri, Xorazm viloyati',
+                    addr2_street: 'Al-Xorazmiy ko\'chasi',
+                    popup_title1: 'Karamel - 1 filial',
+                    popup_title2: 'Karamel - 2 filial',
+                    branch1: '1 filial',
+                    branch2: '2 filial',
+                    hours1: 'Du–Yak: 08:00–00:00',
+                    hours2: 'Du–Yak: 08:00–23:00',
+                    open_map: 'Google xaritada ochish',
+                    hours_range: 'Du–Yak: 08:00–00:00'
+                },
+                menu: {
+                    add: 'Savatchaga qo\'shish'
+                },
+                footer: { rights: 'Barcha huquqlar himoyalangan.', made: 'Golden Pixel tomonidan yaratilgan' },
+                newyear: { mood: 'Yangi yil kayfiyati' }
+            },
+            en: {
+                nav: { home: 'Home', about: 'Story', reviews: 'Reviews', gallery: 'Gallery', location: 'Location' },
+                hero: { subtitle: 'The art of taste since 1996', cta: 'Open menu' },
+                about: {
+                    title: 'Our story',
+                    subtitle: 'A family tradition born from a love of sweets and grown into cozy cafés',
+                    headline: 'A family tradition since 1996',
+                    p1: 'Karamel pastry chain is a family business started by Maryam Matyakubova, a passionate pastry chef. In 1996 she began baking sweets at home for friends, relatives and neighbors.',
+                    p2: 'In 2000, the first shop "Khushnudbek pishiriqlar" opened. In 2008, her sons joined the business: the elder, Khushnudbek Ismoilov, developed the financial model, and the second son, Ismoil Ismoilov, introduced new ideas.',
+                    timeline2013: 'The Karamel brand proposed by Khushnudbek Ismoilov was born. It became not only favorite sweets but also a chain of cafés with hot and cold dishes.',
+                    timeline2020: 'A modern 1,200 m² factory was launched. Today the chain has over 3 shops in Khorezm region of Uzbekistan and employs more than 61 specialists.'
+                },
+                reviews: { title: 'Customer reviews', subtitle: 'What our guests say about Caramel Cafe' },
+                gallery: { title: 'Gallery', subtitle: 'Feel the atmosphere and see our beautiful desserts' },
+                location: {
+                    title: 'Our locations',
+                    subtitle: 'Come visit and enjoy a cozy atmosphere',
+                    visit_us: 'Visit us',
+                    hours: 'Opening hours',
+                    phone: 'Phone',
+                    instagram: 'Follow us on Instagram',
+                    addr1_city: 'Urgench, Khorezm region',
+                    addr1_street: 'Abulgazi Bahodirkhan street',
+                    addr2_city: 'Urgench, Khorezm region',
+                    addr2_street: 'Al-Khwarizmi street',
+                    popup_title1: 'Caramel - Branch 1',
+                    popup_title2: 'Caramel - Branch 2',
+                    branch1: 'Branch 1',
+                    branch2: 'Branch 2',
+                    hours1: 'Mon–Sun: 08:00–00:00',
+                    hours2: 'Mon–Sun: 08:00–23:00',
+                    open_map: 'Open in Google Maps',
+                    hours_range: 'Mon–Sun: 08:00–00:00'
+                },
+                menu: { add: 'Add to cart' },
+                footer: { rights: 'All rights reserved.', made: 'Made by Golden Pixel' },
+                newyear: { mood: 'Holiday spirit' }
+            },
+            tr: {
+                nav: { home: 'Ana sayfa', about: 'Hikaye', reviews: 'Yorumlar', gallery: 'Galeri', location: 'Konum' },
+                hero: {
+                    subtitle: '1996\'dan beri lezzet sanatı', cta: 'Menüyü aç'
+                },
+                about: {
+                    title: 'Hikayemiz',
+                    subtitle: 'Tatlı sevgisiyle başlayan ve sıcak kafelere dönüşen aile geleneği',
+                    headline: '1996\'dan beri aile geleneği',
+                    p1: 'Karamel pastane zinciri, tutkulu pastacı Maryam Matyakubova tarafından başlatılan bir aile işletmesidir. 1996\'da evde arkadaşları ve komşuları için tatlılar yapmaya başladı.',
+                    p2: '2000 yılında "Khushnudbek pishiriqlar" adlı ilk dükkân açıldı. 2008\'de oğulları işletmeye katıldı: büyüğü Khushnudbek Ismoilov finansal modeli geliştirdi, küçük oğlu Ismoil Ismoilov yeni fikirler getirdi.',
+                    timeline2013: 'Khushnudbek Ismoilov\'un önerdiği Karamel markası doğdu. Bu, yalnızca sevilen tatlılar değil, sıcak ve soğuk yemekleri olan bir kafe zinciri oldu.',
+                    timeline2020: '1.200 m²\'lik modern fabrika açıldı. Bugün zincirin Özbekistan\'ın Harezm bölgesinde 3\'ten fazla mağazası var ve 61\'den fazla uzman çalışıyor.'
+                },
+                reviews: { title: 'Müşteri yorumları', subtitle: 'Misafirlerimiz Caramel Cafe hakkında ne diyor' },
+                gallery: { title: 'Galeri', subtitle: 'Atmosferimizi hissedin ve tatlılarımızı görün' },
+                location: {
+                    title: 'Lokasyonlarımız',
+                    subtitle: 'Bizi ziyaret edin ve sıcak atmosferin tadını çıkarın',
+                    visit_us: 'Bizi ziyaret edin',
+                    hours: 'Çalışma saatleri',
+                    phone: 'Telefon',
+                    instagram: 'Instagram\'da takip edin',
+                    addr1_city: 'Ürgenç, Harezm bölgesi',
+                    addr1_street: 'Abulgazi Bahadırhan caddesi',
+                    addr2_city: 'Ürgenç, Harezm bölgesi',
+                    addr2_street: 'El-Harezmi caddesi',
+                    popup_title1: 'Karamel - Şube 1',
+                    popup_title2: 'Karamel - Şube 2',
+                    branch1: 'Şube 1',
+                    branch2: 'Şube 2',
+                    hours1: 'Pzt–Paz: 08:00–00:00',
+                    hours2: 'Pzt–Paz: 08:00–23:00',
+                    open_map: 'Google Haritalar\'da aç',
+                    hours_range: 'Pzt–Paz: 08:00–00:00'
+                },
+                menu: { add: 'Sepete ekle' },
+                footer: { rights: 'Tüm hakları saklıdır.', made: 'Golden Pixel tarafından yapıldı' },
+                newyear: { mood: 'Yılbaşı ruhu' }
+            }
+        };
+        const getLang = () => localStorage.getItem('caramelLang') || 'uz';
+        const setLang = (lang) => localStorage.setItem('caramelLang', lang);
+        function tr(path) {
+            const lang = getLang();
+            const parts = String(path).split('.');
+            let node = I18N[lang] || I18N.ru;
+            for (const p of parts) {
+                if (node && typeof node === 'object' && p in node) node = node[p]; else return path;
+            }
+            return typeof node === 'string' ? node : path;
+        }
+        function applyTranslations() {
+            document.documentElement.setAttribute('lang', getLang());
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = tr(key);
+            });
+        }
+
+        document.querySelectorAll('.mobile-nav a').forEach(link => {
+            link.addEventListener('click', function () {
+                document.getElementById('mobileNav').classList.remove('active');
+                document.getElementById('overlay').classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('header');
+            if (window.scrollY > 630) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        document.querySelectorAll('nav a, .btn[href^="#"], .mobile-nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+
+        const galleryItems = [
+            {
+                image: "caramel_fon.png",
+                title: "Внешний вид нашего кафе",
+                title_uz: "Kafemizning tashqi ko'rinishi",
+                title_tr: "Kafemizin dış görünümü",
+                title_en: "Exterior of our cafe"
+            },
+            {
+                image: "caramel_2.jpg",
+                title: "Внешний вид 2 филиала",
+                title_uz: "2-filialning tashqi ko'rinishi",
+                title_tr: "2. şubenin dış görünümü",
+                title_en: "Exterior of branch 2"
+            },
+            {
+                image: "desert_gallery.jpg",
+                title: "Десерты",
+                title_uz: "Desertlar",
+                title_tr: "Tatlılar",
+                title_en: "Desserts"
+            },
+            {
+                image: "barnaya_stoyka.jpg",
+                title: "Барная стойка",
+                title_uz: "Bar peshtaxtasi",
+                title_tr: "Bar tezgahı",
+                title_en: "Bar counter"
+            },
+            {
+                image: "atmosfera_kafe.jpg",
+                title: "Атмосфера кафе",
+                title_uz: "Kafe muhiti",
+                title_tr: "Kafe atmosferi",
+                title_en: "Cafe atmosphere"
+            }
+        ];
+
+        const reviews = [
+            {
+                text: "Лучший кофе в городе! Атмосфера просто волшебная, чувствуешь себя как дома. Обязательно попробуйте карамельный торт - это нечто!",
+                text_uz: "Shahardagi eng zo'r qahva! Mu hit juda sehrli, o'zingizni uyda his qilasiz. Albatta \"Karamel\" tortini tatib ko'ring — zo'r!",
+                text_en: "Best coffee in town! The atmosphere is truly magical — you feel at home. Be sure to try the caramel cake — it's amazing!",
+                text_tr: "Şehrin en iyi kahvesi! Ortam gerçekten büyülü, kendinizi evinizde hissediyorsunuz. Karamelli pastayı mutlaka deneyin — harika!",
+                author: "Азиза Р.",
+                author_uz: "Aziza R.",
+                author_en: "Aziza R.",
+                author_tr: "Aziza R."
+            },
+            {
+                text: "Постоянно заказываю здесь десерты для семейных праздников. Всегда свежие, красивые и невероятно вкусные. Персонал очень внимательный!",
+                text_uz: "Oilaviy bayramlar uchun desertlarni doim shu yerdan olamiz. Har doim yangi, chiroyli va nihoyatda mazali. Xodimlar juda e'tiborli!",
+                text_en: "We always order desserts here for family celebrations. Always fresh, beautiful and incredibly tasty. The staff is very attentive!",
+                text_tr: "Aile kutlamaları için tatlıları hep buradan alıyoruz. Her zaman taze, güzel ve inanılmaz lezzetli. Personel çok ilgili!",
+                author: "Дилдора Ш.",
+                author_uz: "Dildora Sh.",
+                author_en: "Dildora Sh.",
+                author_tr: "Dildora Sh."
+            },
+            {
+                text: "Обожаю это место! Прихожу сюда работать за ноутбуком, Wi-Fi отличный, кофе вкусный, и никто не торопит. Идеальное кафе для фрилансеров.",
+                text_uz: "Bu joy menga juda yoqadi! Bu yerda noutbuk bilan ishlayman — Wi‑Fi zo'r, qahvasi mazali, hech kim shoshiltirmaydi. Frilanserlar uchun ideal kafe.",
+                text_en: "I love this place! I come here to work on my laptop — Wi‑Fi is great, coffee is tasty, and no one rushes you. Perfect cafe for freelancers.",
+                text_tr: "Bu mekanı seviyorum! Buraya laptopla çalışmaya geliyorum — Wi‑Fi harika, kahve lezzetli, kimse acele ettirmiyor. Freelance çalışanlar için ideal kafe.",
+                author: "Руслан К.",
+                author_uz: "Ruslan K.",
+                author_en: "Ruslan K.",
+                author_tr: "Ruslan K."
+            },
+            {
+                text: "Впервые попробовала тирамису здесь и теперь это мой любимый десерт! Никогда не пробовала ничего подобного. Обязательно вернусь!",
+                text_uz: "Birinchi marta tiramisuni shu yerda tatib ko'rdim va endi bu mening sevimli desertim! Bundayini hech ko'rmaganman. Albatta yana kelaman!",
+                text_en: "I tried tiramisu here for the first time and now it's my favorite dessert! I've never had anything like it. I'll definitely be back!",
+                text_tr: "Tiramisu'yu ilk kez burada denedim ve artık en sevdiğim tatlı! Daha önce böylesini hiç tatmamıştım. Kesinlikle tekrar geleceğim!",
+                author: "Мадина А.",
+                author_uz: "Madina A.",
+                author_en: "Madina A.",
+                author_tr: "Madina A."
+            }
+        ];
+
+        let galleryCurrentSlide = 1; // Start at 1 (first real slide) because 0 is a clone
+        let isGalleryTransitioning = false;
+
+        function populateGalleryItems() {
+            const track = document.querySelector('.gallery-track');
+            const pagination = document.querySelector('.gallery-pagination');
+            if (!track || !pagination) return;
+
+            track.innerHTML = '';
+            pagination.innerHTML = '';
+
+            const createItem = (item, index) => {
+                const lang = getLang();
+                const title =
+                    (lang === 'uz' && item.title_uz) ? item.title_uz :
+                        (lang === 'en' && item.title_en) ? item.title_en :
+                            (lang === 'tr' && item.title_tr) ? item.title_tr :
+                                item.title;
+
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `
+                    <img src="${item.image}" alt="${title}">
+                    <div class="gallery-overlay" style="opacity: 1; background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.7)); padding: 30px;">
+                        <h4 style="font-size: 1.5rem;">${title}</h4>
+                    </div>
+                `;
+
+                return galleryItem;
+            };
+
+            // Clone last to start
+            track.appendChild(createItem(galleryItems[galleryItems.length - 1]));
+
+            // Add all original slides
+            galleryItems.forEach((item, index) => {
+                track.appendChild(createItem(item));
+
+                // Create pagination dots
+                const dot = document.createElement('div');
+                dot.className = `gallery-dot ${index === 0 ? 'active' : ''}`;
+                dot.addEventListener('click', () => {
+                    if (isGalleryTransitioning) return;
+                    goToGallerySlide(index + 1);
+                });
+                pagination.appendChild(dot);
+            });
+
+            // Clone first to end
+            track.appendChild(createItem(galleryItems[0]));
+
+            updateGalleryNav(false); // No animation for initial setup
+        }
+
+        function updateGalleryNav(animate = true) {
+            const track = document.querySelector('.gallery-track');
+            const dots = document.querySelectorAll('.gallery-dot');
+            if (!track) return;
+
+            if (animate) {
+                track.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+            } else {
+                track.style.transition = 'none';
+            }
+
+            track.style.transform = `translateX(-${galleryCurrentSlide * 100}%)`;
+
+            // Update dots
+            let dotIndex = galleryCurrentSlide - 1;
+            if (galleryCurrentSlide === 0) dotIndex = galleryItems.length - 1;
+            if (galleryCurrentSlide === galleryItems.length + 1) dotIndex = 0;
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === dotIndex);
+            });
+        }
+
+        function handleGalleryTransitionEnd() {
+            const track = document.querySelector('.gallery-track');
+            isGalleryTransitioning = false;
+
+            if (galleryCurrentSlide === 0) {
+                galleryCurrentSlide = galleryItems.length;
+                updateGalleryNav(false);
+            } else if (galleryCurrentSlide === galleryItems.length + 1) {
+                galleryCurrentSlide = 1;
+                updateGalleryNav(false);
+            }
+        }
+
+        function goToGallerySlide(index) {
+            if (isGalleryTransitioning) return;
+            isGalleryTransitioning = true;
+            galleryCurrentSlide = index;
+            updateGalleryNav(true);
+        }
+
+        function nextGallerySlide() {
+            if (isGalleryTransitioning) return;
+            isGalleryTransitioning = true;
+            galleryCurrentSlide++;
+            updateGalleryNav(true);
+        }
+
+        function prevGallerySlide() {
+            if (isGalleryTransitioning) return;
+            isGalleryTransitioning = true;
+            galleryCurrentSlide--;
+            updateGalleryNav(true);
+        }
+
+        // Event listeners for gallery nav
+        document.addEventListener('DOMContentLoaded', () => {
+            const nextBtn = document.querySelector('.gallery-next');
+            const prevBtn = document.querySelector('.gallery-prev');
+            const track = document.querySelector('.gallery-track');
+
+            if (nextBtn) nextBtn.addEventListener('click', nextGallerySlide);
+            if (prevBtn) prevBtn.addEventListener('click', prevGallerySlide);
+            if (track) track.addEventListener('transitionend', handleGalleryTransitionEnd);
+
+            // Auto-advance every 5 seconds
+            setInterval(nextGallerySlide, 5000);
+        });
+
+        function populateReviews() {
+            const reviewsContainer = document.getElementById('reviewsContainer');
+            const sliderNav = document.getElementById('sliderNav');
+
+            reviews.forEach((review, index) => {
+                const lang = getLang();
+                const text =
+                    (lang === 'uz' && review.text_uz) ? review.text_uz :
+                        (lang === 'en' && review.text_en) ? review.text_en :
+                            (lang === 'tr' && review.text_tr) ? review.text_tr :
+                                review.text;
+                const author =
+                    (lang === 'uz' && review.author_uz) ? review.author_uz :
+                        (lang === 'en' && review.author_en) ? review.author_en :
+                            (lang === 'tr' && review.author_tr) ? review.author_tr :
+                                review.author;
+                const reviewElement = document.createElement('div');
+                reviewElement.className = 'review fade-in';
+                reviewElement.innerHTML = `
+                    <p class="review-text">"${text}"</p>
+                    <p class="review-author">— ${author}</p>
+                `;
+                reviewsContainer.appendChild(reviewElement);
+
+                const dot = document.createElement('div');
+                dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
+                dot.setAttribute('data-index', index);
+                sliderNav.appendChild(dot);
+
+                dot.addEventListener('click', function () {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    goToSlide(index);
+                });
+            });
+        }
+
+        let currentSlide = 0;
+
+        function goToSlide(index) {
+            const reviewsContainer = document.getElementById('reviewsContainer');
+            const dots = document.querySelectorAll('.slider-dot');
+
+            currentSlide = index;
+            reviewsContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % reviews.length;
+            goToSlide(currentSlide);
+        }
+
+        setInterval(nextSlide, 5000);
+
+
+        function initMap() {
+            // Координаты двух точек «Карамель»
+            const caramel1 = [41.5590814, 60.6402353];
+            const caramel2 = [41.5561878, 60.6308649];
+
+            const map = L.map('map');
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            function popupHtml(titleKey, streetKey) {
+                const title = tr(titleKey);
+                const street = tr(streetKey);
+                const openLabel = tr('location.open_map');
+                const href1 = "https://www.google.com/maps/place/%D0%9A%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D0%BB%D1%8C/@41.5592981,60.6406187,18.21z/data=!4m12!1m5!3m4!2zNDHCsDMzJzMzLjIiTiA2MMKwMzgnMjUuMyJF!8m2!3d41.55921!4d60.640353!3m5!1s0x41dfcf66c5553775:0xb521b846f7fc9d08!8m2!3d41.5590814!4d60.6402353!16s%2Fg%2F11r3zxjlxs?entry=ttu&g_ep=EgoyMDI1MTExNy4wIKXMDSoASAFQAw%3D%3D";
+                const href2 = "https://www.google.com/maps/place/Caramel/@41.5559638,60.6309305,19.5z/data=!4m12!1m5!3m4!2zNDHCsDMzJzIyLjQiTiA2MMKwMzcnNTEuMiJF!8m2!3d41.556219!4d60.630895!3m5!1s0x41dfc92aca350927:0x55a6c3ccb7fb9d51!8m2!3d41.5561878!4d60.6308649!16s%2Fg%2F11c7v8mx0f?entry=ttu&g_ep=EgoyMDI1MTExNy4wIKXMDSoASAFQAw%3D%3D";
+                const href = streetKey.includes('addr1_') ? href1 : href2;
+                return `
+                    <div style="text-align: center;">
+                        <h3 style="margin: 0 0 10px; color: #4B2E1E;">${title}</h3>
+                        <p style="margin: 0 0 8px;">${street}</p>
+                        <a href="${href}" target="_blank" rel="noopener" style="color:#CDA676;text-decoration:none;">${openLabel}</a>
+                    </div>`;
+            }
+
+            const marker1 = L.marker(caramel1).bindPopup(popupHtml('location.popup_title1', 'location.addr1_street'));
+            const marker2 = L.marker(caramel2).bindPopup(popupHtml('location.popup_title2', 'location.addr2_street'));
+
+            const group = L.featureGroup([marker1, marker2]).addTo(map);
+            // Подгоняем карту так, чтобы обе метки были видны с отступом
+            map.fitBounds(group.getBounds().pad(0.3));
+            // Открываем по умолчанию попап первой точки
+            setTimeout(() => {
+                marker1.openPopup();
+            }, 300);
+
+            // Сохраним маркеры для повторной локализации при смене языка
+            window.__caramelMarkers = { marker1, marker2, popupHtml };
+        }
+
+        document.querySelector('.close-modal').addEventListener('click', function () {
+            document.getElementById('galleryModal').style.display = 'none';
+            document.body.style.overflow = '';
+        });
+
+        document.getElementById('galleryModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        function initScrollAnimations() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            populateGalleryItems();
+            populateReviews();
+            initMap();
+            initScrollAnimations();
+            goToSlide(0);
+            // Создаем снежинки для основного контейнера
+            createSnowflakes('snowContainer');
+            // I18N init
+            const langSel = document.getElementById('langSelect');
+            const langSelMobile = document.getElementById('langSelectMobile');
+            const currentLang = getLang();
+            if (langSel) langSel.value = currentLang;
+            if (langSelMobile) langSelMobile.value = currentLang;
+            applyTranslations();
+            function onLangChange(value) {
+                setLang(value);
+                if (langSel) langSel.value = value;
+                if (langSelMobile) langSelMobile.value = value;
+                applyTranslations();
+                // Перерисуем галерею (локализованные подписи)
+                const galleryContainer = document.querySelector('.gallery-track');
+                if (galleryContainer) {
+                    populateGalleryItems();
+                }
+                // Перелокализуем попапы карты без перезагрузки
+                if (window.__caramelMarkers && window.__caramelMarkers.popupHtml) {
+                    const { marker1, marker2, popupHtml } = window.__caramelMarkers;
+                    if (marker1) marker1.setPopupContent(popupHtml('location.popup_title1', 'location.addr1_street'));
+                    if (marker2) marker2.setPopupContent(popupHtml('location.popup_title2', 'location.addr2_street'));
+                }
+                // Перерисуем отзывы, чтобы обновились имена и тексты
+                const rc = document.getElementById('reviewsContainer');
+                const sn = document.getElementById('sliderNav');
+                if (rc && sn) {
+                    rc.innerHTML = '';
+                    sn.innerHTML = '';
+                    populateReviews();
+                    goToSlide(0);
+                    // перезапускаем автопрокрутку и анимации появления
+                    if (typeof startSlider === 'function') {
+                        stopSlider && stopSlider();
+                        startSlider();
+                    }
+                    if (typeof initScrollAnimations === 'function') {
+                        initScrollAnimations();
+                    } else {
+                        document.querySelectorAll('#reviewsContainer .fade-in').forEach(el => el.classList.add('visible'));
+                    }
+                }
+            }
+            if (langSel) {
+                langSel.addEventListener('change', e => onLangChange(e.target.value));
+            }
+            if (langSelMobile) {
+                langSelMobile.addEventListener('change', e => onLangChange(e.target.value));
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1023,6 +1023,57 @@
       transform: scale(1.07);
     }
 
+    /* Выпечка — карточки без фото, декоративный блок */
+    .menu-item--bakery .menu-item-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+      background: linear-gradient(145deg, #FAF6F0 0%, #F0E8DC 40%, #E8DED2 100%);
+      border-bottom: 2px solid rgba(212, 175, 55, 0.25);
+      position: relative;
+    }
+
+    .menu-item--bakery .menu-item-image::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .menu-item--bakery .menu-item-image::after {
+      display: none;
+    }
+
+    .menu-item-bakery-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      min-height: 140px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .menu-item-bakery-placeholder .bakery-icon {
+      font-size: 3.25rem;
+      opacity: 0.55;
+      line-height: 1;
+      transition: var(--transition-smooth);
+    }
+
+    .menu-item--bakery:hover .menu-item-image {
+      background: linear-gradient(145deg, #F5EDE4 0%, #EBE0D4 50%, #E5DACE 100%);
+      border-bottom-color: rgba(212, 175, 55, 0.4);
+    }
+
+    .menu-item--bakery:hover .menu-item-bakery-placeholder .bakery-icon {
+      opacity: 0.75;
+      transform: scale(1.1);
+    }
+
     .menu-item-content {
       padding: 18px 20px 20px;
     }
@@ -1247,7 +1298,18 @@
       /* Компактный вид карточки для планшетов и мобильных */
       .menu-item-image {
         height: 140px;
-        /* Уменьшаем высоту картинки */
+      }
+
+      .menu-item--bakery .menu-item-image {
+        min-height: 110px;
+      }
+
+      .menu-item-bakery-placeholder {
+        min-height: 110px;
+      }
+
+      .menu-item-bakery-placeholder .bakery-icon {
+        font-size: 2.5rem;
       }
 
       .menu-item-content {
@@ -7137,11 +7199,14 @@
 
         groups[groupName].forEach(item => {
           const itemEl = document.createElement('div');
-          itemEl.className = 'menu-item';
+          const isBakery = item.section === 'bakery';
+          itemEl.className = 'menu-item' + (isBakery ? ' menu-item--bakery' : '');
 
-          const imageHtml = item.image
-            ? `<img src="${item.image}" alt="${item.name}" loading="lazy" width="300" height="190">`
-            : '';
+          const imageHtml = isBakery
+            ? `<div class="menu-item-bakery-placeholder" aria-hidden="true"><span class="bakery-icon">🥐</span></div>`
+            : (item.image
+              ? `<img src="${item.image}" alt="${item.name}" loading="lazy" width="300" height="190">`
+              : '');
 
           // Подготовка цены и селектора вариантов (пицца/кофе/бардак-чай/мохито/фреш)
           const isPizza = item.category === 'pizza';

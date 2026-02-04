@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
   <link rel="icon" type="image/png" href="caramel.logo.png">
   <style>
@@ -21,6 +21,10 @@
       --light-caramel: #E8D4B9;
       --dark-brown: #3A2418;
       --gold: #D4AF37;
+      --radius-lg: 20px;
+      --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #E8C874 50%, #D4AF37 100%);
+      --dark: var(--chocolate);
+      --text-light: #5A5A5A;
     }
 
     * {
@@ -976,6 +980,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 28px;
+      align-items: start;
       contain: layout style;
     }
 
@@ -1023,45 +1028,127 @@
       transform: scale(1.07);
     }
 
-    /* Выпечка — карточки без блока изображения */
-    .menu-item--bakery .menu-item-image {
+    /* Выпечка и позиции без фото — скрываем блок изображения */
+    .menu-item--bakery .menu-item-image,
+    .menu-item--no-image .menu-item-image {
       display: none;
     }
 
+    /* Карточки без фото растягиваем по высоте ряда — пустота под контентом того же фона, без «дыры» */
+    .menu-item--bakery,
+    .menu-item--no-image {
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .menu-item--bakery .menu-item-content,
+    .menu-item--no-image .menu-item-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .menu-item--bakery .menu-item-actions,
+    .menu-item--no-image .menu-item-actions {
+      margin-top: auto;
+    }
+
+    /* Единое оформление карточек без фото */
+    .menu-item--bakery,
+    .menu-item--no-image {
+      background: linear-gradient(180deg, #FFFDF9 0%, #FAF7F2 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.02);
+    }
+
+    .menu-item--bakery::before,
+    .menu-item--no-image::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gradient-gold);
+      border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+      opacity: 0.8;
+    }
+
+    .menu-item--bakery:hover,
+    .menu-item--no-image:hover {
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(212, 175, 55, 0.2);
+      border-color: rgba(212, 175, 55, 0.25);
+    }
+
+    .menu-item--bakery .menu-item-content,
+    .menu-item--no-image .menu-item-content {
+      padding: 20px 22px 24px 24px;
+    }
+
+    .menu-item--bakery .menu-item-title,
+    .menu-item--no-image .menu-item-title {
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+    }
+
+    .menu-item--bakery .menu-item-title h3,
+    .menu-item--no-image .menu-item-title h3 {
+      font-size: 1.15rem;
+    }
+
+    .menu-item--bakery .menu-item-price,
+    .menu-item--no-image .menu-item-price {
+      font-size: 1rem;
+    }
+
+    .menu-item--bakery p,
+    .menu-item--no-image p {
+      font-size: 0.88rem;
+      margin-bottom: 18px;
+    }
+
     .menu-item-content {
-      padding: 18px 20px 20px;
+      padding: 24px 24px 28px;
     }
 
     .menu-item-title {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
       align-items: baseline;
-      gap: 10px;
+      gap: 12px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     }
 
     .menu-item-title h3 {
+      font-family: 'Playfair Display', serif;
       font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--chocolate);
     }
 
     .menu-item-price {
       color: var(--caramel);
       font-weight: 600;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       white-space: nowrap;
     }
 
     .menu-item p {
-      color: #666;
-      line-height: 1.6;
-      margin-bottom: 12px;
-      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-light);
+      line-height: 1.65;
+      margin-bottom: 22px;
+      font-size: 0.9rem;
     }
 
     .menu-item-meta {
       font-size: 0.85rem;
       color: #999;
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
 
     /* Ряд действий: плюс слева, размеры справа */
@@ -1070,7 +1157,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      margin-top: 8px;
+      margin-top: 18px;
     }
 
     .menu-item-actions .menu-item-order {
@@ -1296,7 +1383,19 @@
     @media (max-width: 500px) {
       .menu-grid {
         grid-template-columns: 1fr;
-        padding: 0 15px;
+        padding: 0;
+      }
+    }
+
+    /* На узких экранах (320px) уменьшаем боковые отступы — карточки на всю ширину */
+    @media (max-width: 360px) {
+      .container {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .menu-grid {
+        gap: 20px;
       }
 
       .cart-modal {
@@ -2748,7 +2847,7 @@
         description_tr: "Kahvenize seçtiğiniz şurup ekleme",
         meta: "",
         group: "Добавки",
-        image: "images/kofe_sirop.jpg"
+        noImage: true
       },
 
       // ЧАЙ и МАТЧА / ICE TEA
@@ -2801,7 +2900,7 @@
         description_tr: "Tarçın, yıldız anason, karanfil, siyah çay, bal, zencefil ve portakal şurubu ile özel çay",
         meta: "",
         group: "Чай",
-        image: "images/tea_avtorskiy_marakkanskiy.jpg"
+        noImage: true
       },
       {
         id: 226,
@@ -2869,7 +2968,7 @@
         description_tr: "İğde, portakal, nane ve portakal şurubu ile siyah çay",
         meta: "",
         group: "Чай",
-        image: "images/tea_avtorskiy_oblepixa.jpg"
+        noImage: true
       },
       {
         id: 231,
@@ -2937,7 +3036,7 @@
         description_tr: "Bergamot aroması ile siyah çay",
         meta: "",
         group: "Чай",
-        image: "images/tea_bergamot.jpg"
+        noImage: true
       },
       {
         id: 235,
@@ -3039,7 +3138,7 @@
         description_tr: "Elma dilimleri ile yasemin çayı",
         meta: "",
         group: "Чай",
-        image: "images/tea_jasmin_yabloko.png"
+        noImage: true
       },
       {
         id: 243,
@@ -3541,24 +3640,7 @@
         description_tr: "Süt bazlı kremalı muzlu smoothie — koyu, yumuşak ve doyurucu",
         meta: "",
         group: "Смузи",
-        image: "images/smuzi_banan.jpg",
-      },
-      {
-        id: 292,
-        section: 'drinks',
-        category: 'smoothies',
-        name: "Облепиховый",
-        name_uz: "Dengiz qora smuzi",
-        name_en: "Sea Buckthorn",
-        name_tr: "İğde",
-        price: "25,000 so`m",
-        description: "Ярко‑оранжевый смузи из облепихи с приятной кислинкой и мёдовой сладостью.",
-        description_uz: "Dengiz qoradan tayyorlangan yorqin to'q sariq smuzi — yoqimli nordonlik va asal shirinligi bilan",
-        description_en: "Bright orange smoothie from sea buckthorn with pleasant acidity and honey sweetness",
-        description_tr: "Hoş ekşilik ve bal tatlılığı ile iğdeden parlak turuncu smoothie",
-        meta: "",
-        group: "Смузи",
-        image: "images/oblepixa_smuzi.jpg"
+        noImage: true
       },
       {
         id: 293,
@@ -7014,7 +7096,7 @@
         description_en: "Aromatic pizza sauce on tomato base",
         description_tr: "Domates bazında aromatik pizza sosu",
         group: "Соусы",
-        image: "images/pizza_sous.jpg"
+        noImage: true
       },
 
       // ВЫПЕЧКА
@@ -7142,9 +7224,10 @@
         groups[groupName].forEach(item => {
           const itemEl = document.createElement('div');
           const isBakery = item.section === 'bakery';
-          itemEl.className = 'menu-item' + (isBakery ? ' menu-item--bakery' : '');
+          const isNoImage = isBakery || item.noImage === true;
+          itemEl.className = 'menu-item' + (isBakery ? ' menu-item--bakery' : '') + (isNoImage ? ' menu-item--no-image' : '');
 
-          const imageHtml = isBakery
+          const imageHtml = isNoImage
             ? ''
             : (item.image
               ? `<img src="${item.image}" alt="${item.name}" loading="lazy" width="300" height="190">`

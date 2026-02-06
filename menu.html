@@ -421,9 +421,9 @@
 
     .cart-item {
       display: flex;
-      margin-bottom: 20px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--light-caramel);
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(205, 166, 118, 0.35);
     }
 
     .cart-item-image {
@@ -461,12 +461,13 @@
       font-size: 0.8rem;
       font-weight: 600;
       color: var(--chocolate);
-      background: rgba(205, 166, 118, 0.2);
-      border-left: 2px solid var(--caramel);
-      padding: 4px 10px;
+      background: linear-gradient(90deg, rgba(205, 166, 118, 0.22) 0%, rgba(205, 166, 118, 0.1) 100%);
+      border-left: 3px solid var(--caramel);
+      padding: 6px 12px;
       margin-bottom: 8px;
-      border-radius: 0 6px 6px 0;
+      border-radius: 0 8px 8px 0;
       display: inline-block;
+      box-shadow: 0 1px 3px rgba(205, 166, 118, 0.15);
     }
 
     .cart-item-controls {
@@ -478,17 +479,20 @@
     .cart-summary-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 1.1rem;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+      gap: 12px;
     }
 
     .cart-summary-row.total {
       font-weight: 700;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       color: var(--chocolate);
-      border-top: 1px solid var(--light-caramel);
-      padding-top: 10px;
-      margin-top: 10px;
+      border-top: 1px solid rgba(205, 166, 118, 0.4);
+      padding-top: 12px;
+      margin-top: 8px;
+      margin-bottom: 0;
     }
 
     .quantity-btn {
@@ -532,14 +536,14 @@
     }
 
     .cart-footer {
-      padding: 20px;
-      border-top: 1px solid var(--light-caramel);
+      padding: 16px 20px 20px;
+      border-top: 1px solid rgba(205, 166, 118, 0.35);
     }
 
     .cart-total {
       display: block;
-      margin-bottom: 20px;
-      font-size: 1.2rem;
+      margin-bottom: 14px;
+      font-size: 1.1rem;
       font-weight: 600;
       color: var(--chocolate);
     }
@@ -551,18 +555,22 @@
 
     .clear-cart {
       flex: 1;
-      background: none;
-      border: 1px solid var(--chocolate);
+      background: transparent;
+      border: 1.5px solid var(--caramel);
       color: var(--chocolate);
-      padding: 12px;
-      border-radius: 5px;
+      padding: 12px 16px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.3s;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
     }
 
     .clear-cart:hover {
-      background-color: var(--chocolate);
+      background: var(--caramel);
       color: var(--milk-white);
+      border-color: var(--caramel);
     }
 
     .notification {
@@ -1404,23 +1412,11 @@
       }
     }
 
-    /* Только для совсем узких экранов оставляем 1 колонку */
-    @media (max-width: 500px) {
+    /* Главный мобильный брейкпоинт: 480px (от него зависят 375, 425 и уже) */
+    @media (max-width: 480px) {
       .menu-grid {
         grid-template-columns: 1fr;
         padding: 0;
-      }
-    }
-
-    /* На узких экранах (320px) уменьшаем боковые отступы — карточки на всю ширину */
-    @media (max-width: 360px) {
-      .container {
-        padding-left: 12px;
-        padding-right: 12px;
-      }
-
-      .menu-grid {
-        gap: 20px;
       }
 
       .cart-modal {
@@ -1436,6 +1432,32 @@
 
       .cart-modal.active {
         right: 0;
+      }
+
+      /* Итоги в корзине: подпись и сумма в две строки, чтобы не обрезались */
+      .cart-summary-row {
+        flex-wrap: wrap;
+        gap: 2px 12px;
+      }
+      .cart-summary-row span:first-child {
+        width: 100%;
+      }
+      .cart-summary-row span:last-child {
+        width: 100%;
+        flex-shrink: 0;
+        text-align: right;
+      }
+    }
+
+    /* Ещё уже (320px): меньше боковые отступы */
+    @media (max-width: 360px) {
+      .container {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .menu-grid {
+        gap: 20px;
       }
     }
 
@@ -2550,14 +2572,14 @@
         name_uz: "Amerikano",
         name_en: "Americano",
         name_tr: "Americano",
-        price: "15,000 so`m",
+        price: "15/18,000 so`m",
         description: "Чёрный кофе на основе эспрессо, разбавленный горячей водой",
         description_uz: "Ekspresso asosidagi qora qahva, issiq suv bilan suyultirilgan",
         description_en: "Black coffee based on espresso, diluted with hot water",
         description_tr: "Espresso bazlı siyah kahve, sıcak su ile seyreltilmiş",
         meta: "",
         group: "Кофе",
-        volumes: [0.2],
+        volumes: [0.2, 0.3],
         image: "images/kofe_amerikano.jpeg"
       },
       {
@@ -6764,7 +6786,7 @@
         description_en: "BBQ pizza with ham, mushrooms, tomatoes, olives and mozzarella cheese under aromatic barbecue sauce",
         description_tr: "Aromatik barbekü sosu altında jambon, mantar, domates, zeytin ve mozzarella peyniri ile Barbekü pizza",
         group: "Пицца",
-        image: "images/pizza_bbq.jpg"
+        noImage: true
       },
       {
         id: 650,

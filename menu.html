@@ -457,6 +457,18 @@
       margin-bottom: 10px;
     }
 
+    .cart-item-portion {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--chocolate);
+      background: rgba(205, 166, 118, 0.2);
+      border-left: 2px solid var(--caramel);
+      padding: 4px 10px;
+      margin-bottom: 8px;
+      border-radius: 0 6px 6px 0;
+      display: inline-block;
+    }
+
     .cart-item-controls {
       display: flex;
       align-items: center;
@@ -1149,6 +1161,19 @@
       font-size: 0.85rem;
       color: #999;
       margin-bottom: 18px;
+    }
+
+    /* Заметный блок «В порции» (блинчики и т.п.) */
+    .menu-item-portion {
+      display: inline-block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--chocolate);
+      background: rgba(205, 166, 118, 0.2);
+      border-left: 3px solid var(--caramel);
+      padding: 8px 14px;
+      margin-bottom: 14px;
+      border-radius: 0 8px 8px 0;
     }
 
     /* Ряд действий: плюс слева, размеры справа */
@@ -1937,6 +1962,13 @@
       if (lang === 'tr' && item.description_tr) return item.description_tr;
       return item.description;
     }
+    function getItemMetaLocalized(item) {
+      const lang = getLang();
+      if (lang === 'uz' && item.meta_uz) return item.meta_uz;
+      if (lang === 'en' && item.meta_en) return item.meta_en;
+      if (lang === 'tr' && item.meta_tr) return item.meta_tr;
+      return item.meta || '';
+    }
     // Локализация названий групп (Завтраки, Салаты и т.п.)
     const GROUP_LABELS = {
       'Завтраки': { ru: 'Завтраки', uz: 'Nonushta', en: 'Breakfast', tr: 'Kahvaltı' },
@@ -2137,6 +2169,7 @@
             : '';
           const variantNote = item.variantLabel ? ` <span style="opacity:.7;">(${item.variantLabel})</span>` : '';
 
+          const metaHtml = (item.meta || item.meta_uz) ? `<div class="cart-item-portion">${getItemMetaLocalized(item)}</div>` : '';
           return `
                     <div class="cart-item">
                         <div class="cart-item-image">
@@ -2144,6 +2177,7 @@
                         </div>
                         <div class="cart-item-details">
                             <div class="cart-item-title">${getItemNameLocalized(item)}${variantNote}</div>
+                            ${metaHtml}
                             <div class="cart-item-price">${localizePriceString(item.price)}</div>
                             <div class="cart-item-controls">
                                 <button class="quantity-btn minus" data-id="${item.id}" data-variant="${item.variant || ''}">-</button>
@@ -5380,6 +5414,10 @@
         description_uz: "Yupqa, qizargan blinchik shirali go'shtli qiyma bilan",
         description_en: "Thin golden pancake with juicy meat filling",
         description_tr: "Sulu et dolgusu ile ince altın krep",
+        meta: "В порции 3 шт.",
+        meta_uz: "Porsiyada 3 ta.",
+        meta_en: "3 pcs per portion.",
+        meta_tr: "Porsiyonda 3 adet.",
         group: "Домашние блинчики",
         image: "images/blinchik_farsh.jpeg"
       },
@@ -5396,6 +5434,10 @@
         description_uz: "Uy uslubidagi issiq blinchiklar mo'l smetana bilan",
         description_en: "Warm homemade pancakes with generous portion of sour cream",
         description_tr: "Cömert ekşi krema porsiyonu ile sıcak ev yapımı krepler",
+        meta: "В порции 3 шт.",
+        meta_uz: "Porsiyada 3 ta.",
+        meta_en: "3 pcs per portion.",
+        meta_tr: "Porsiyonda 3 adet.",
         group: "Домашние блинчики",
         image: "images/blinchik_smetana.jpeg"
       },
@@ -5412,6 +5454,10 @@
         description_uz: "Shirin tvorogli nozik blinchiklar",
         description_en: "Tender pancakes with sweet cottage cheese filling",
         description_tr: "Tatlı lor peyniri dolgusu ile yumuşak krepler",
+        meta: "В порции 3 шт.",
+        meta_uz: "Porsiyada 3 ta.",
+        meta_en: "3 pcs per portion.",
+        meta_tr: "Porsiyonda 3 adet.",
         group: "Домашние блинчики",
         image: "images/blinchik_tvorog.jpeg"
       },
@@ -5428,6 +5474,10 @@
         description_uz: "Issiq shokoladli ichlik bilan, shirinlik ixlosmandlari uchun",
         description_en: "Pancakes with warm chocolate filling for sweet lovers",
         description_tr: "Tatlı severler için sıcak çikolata dolgusu ile krepler",
+        meta: "В порции 3 шт.",
+        meta_uz: "Porsiyada 3 ta.",
+        meta_en: "3 pcs per portion.",
+        meta_tr: "Porsiyonda 3 adet.",
         group: "Домашние блинчики",
         image: "images/blinchik_shokolad.webp"
       },
@@ -5444,6 +5494,10 @@
         description_uz: "Yupqa blinchiklar mevali jem bilan mo'l surtilgan",
         description_en: "Thin pancakes generously spread with fruit jam",
         description_tr: "Meyveli reçel ile cömertçe sürülmüş ince krepler",
+        meta: "В порции 3 шт.",
+        meta_uz: "Porsiyada 3 ta.",
+        meta_en: "3 pcs per portion.",
+        meta_tr: "Porsiyonda 3 adet.",
         group: "Домашние блинчики",
         image: "images/blinchik_jam.jpeg"
       },
@@ -5460,6 +5514,10 @@
         description_uz: "Klassik blinchiklar — quyultirilgan sut bilan, bolalikdagi shirin ta'm",
         description_en: "Classic pancakes with condensed milk — sweet childhood classic",
         description_tr: "Yoğunlaştırılmış süt ile klasik krepler — tatlı çocukluk klasiği",
+        meta: "В порции 3 шт.",
+        meta_uz: "Porsiyada 3 ta.",
+        meta_en: "3 pcs per portion.",
+        meta_tr: "Porsiyonda 3 adet.",
         group: "Домашние блинчики",
         image: "images/blinchik_sgushenka.jpeg"
       },
@@ -7339,7 +7397,7 @@
                                 <span class="menu-item-price">${priceDisplay}</span>
                             </div>
                             <p>${getItemDescriptionLocalized(item)}</p>
-                            ${item.meta ? `<div class="menu-item-meta">${item.meta}</div>` : ''}
+                            ${(item.meta || item.meta_uz) ? `<div class="menu-item-portion">${getItemMetaLocalized(item)}</div>` : ''}
                             <div class="menu-item-actions">
                               <div class="menu-item-order" data-id="${item.id}" ${initialVariant ? `data-variant="${initialVariant}" data-variant-label="${initialVariantLabel}"` : ''}>
                                 <button class="menu-item-order-btn single plus" aria-label="Добавить в корзину">+</button>

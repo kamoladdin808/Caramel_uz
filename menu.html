@@ -5821,6 +5821,23 @@
         group: "Салаты",
         image: "images/vitaminka.jpeg"
       },
+      {
+        id: 563,
+        section: 'food',
+        category: 'salad',
+        name: "Стейк салат",
+        name_uz: "Steyk salat",
+        name_en: "Steak Salad",
+        name_tr: "Biftek Salatası",
+        price: "65,000 so`m",
+        description: "Салат с сочным стейком, свежими овощами и заправкой",
+        description_uz: "Sersuv steyk, yangi sabzavotlar va sous bilan salat",
+        description_en: "Salad with juicy steak, fresh vegetables and dressing",
+        description_tr: "Sulu biftek, taze sebzeler ve sos ile salata",
+        meta: "",
+        group: "Салаты",
+        image: "images/steyk_salat.webp"
+      },
 
       // ЕДА: супы (SOUP)
       {
@@ -5886,6 +5903,57 @@
         description_tr: "Zengin pancar suyu ve aromatik otlar ile klasik borscht, ekşi krema ile servis edilir",
         group: "Супы",
         image: "images/borsh.webp"
+      },
+      {
+        id: 574,
+        section: 'food',
+        category: 'soup',
+        name: "Грибной Крем Суп",
+        name_uz: "Qo'ziqorinli krem sho'rva",
+        name_en: "Cream of Mushroom Soup",
+        name_tr: "Mantarlı Kremalı Çorba",
+        price: "40,000 so`m",
+        description: "Нежный крем-суп из шампиньонов со сливками и ароматными травами",
+        description_uz: "Qaymoq va xushbo'y o'tlar bilan qo'ziqorindan tayyorlangan mayin krem sho'rva",
+        description_en: "Tender cream of mushroom soup with cream and aromatic herbs",
+        description_tr: "Krema ve aromatik otlar ile yumuşak mantarlı kremalı çorba",
+        meta: "",
+        group: "Супы",
+        image: "images/krem_sup_grib.webp"
+      },
+      {
+        id: 575,
+        section: 'food',
+        category: 'soup',
+        name: "Суп с говядиной",
+        name_uz: "Mol go'shti sho'rva",
+        name_en: "Beef Soup",
+        name_tr: "Sığır Eti Çorbası",
+        price: "35,000 so`m",
+        description: "Наваристый суп с говядиной и овощами",
+        description_uz: "Mol go'shti va sabzavotlar bilan to'yingan sho'rva",
+        description_en: "Hearty soup with beef and vegetables",
+        description_tr: "Sığır eti ve sebzeler ile doyurucu çorba",
+        meta: "",
+        group: "Супы",
+        image: "images/sup_govyadina.webp"
+      },
+      {
+        id: 576,
+        section: 'food',
+        category: 'soup',
+        name: "Суп том ям",
+        name_uz: "Tom yam sho'rva",
+        name_en: "Tom Yum Soup",
+        name_tr: "Tom Yum Çorbası",
+        price: "35,000 so`m",
+        description: "Острый тайский суп том ям с креветками, грибами и лемонграссом",
+        description_uz: "Qisqichbaqalar, qo'ziqorinlar va limon o'ti bilan tailandcha achchiq tom yam sho'rva",
+        description_en: "Spicy Thai tom yum soup with shrimp, mushrooms and lemongrass",
+        description_tr: "Karides, mantar ve limon otu ile baharatlı Tay tom yum çorbası",
+        meta: "",
+        group: "Супы",
+        image: "images/sup_tomyam.webp"
       },
 
       // ЕДА: паста (PASTA)
@@ -6252,7 +6320,40 @@
         description_tr: "Yumuşak krem peynir ve masago havyarı ile rulo",
         group: "Суши",
         image: "images/roll_ikroy.jpeg"
-
+      },
+      {
+        id: 628,
+        section: 'food',
+        category: 'sushi',
+        name: "Ролл пицца",
+        name_uz: "Pitsa rolli",
+        name_en: "Pizza Roll",
+        name_tr: "Pizza Rulosu",
+        price: "45,000 so`m",
+        description: "Ролл в стиле пиццы с томатным соусом, моцареллой и пикантной начинкой",
+        description_uz: "Pitsa uslubidagi rolli — pomidor sousi, mozzarella va pikant to'ldiruvchi bilan",
+        description_en: "Pizza-style roll with tomato sauce, mozzarella and savory filling",
+        description_tr: "Domates sosu, mozzarella ve tuzlu iç dolgusu ile pizza tarzı rulo",
+        meta: "",
+        group: "Суши",
+        image: "images/roll_pizza.webp"
+      },
+      {
+        id: 629,
+        section: 'food',
+        category: 'sushi',
+        name: "Ролл сакура",
+        name_uz: "Sakura rolli",
+        name_en: "Sakura Roll",
+        name_tr: "Sakura Rulosu",
+        price: "70,000 so`m",
+        description: "Фирменный ролл в стиле сакуры с нежной начинкой",
+        description_uz: "Sakura uslubidagi imzo rolli — nozik to'ldiruvchi bilan",
+        description_en: "Signature sakura-style roll with delicate filling",
+        description_tr: "Narin iç dolgulu sakura tarzı özel rulo",
+        meta: "",
+        group: "Суши",
+        image: "images/roll_sakura.webp"
       },
       {
         id: 617,
@@ -7585,6 +7686,18 @@
       applyStaticTranslations();
       renderCategoryButtons(currentSection);
       renderMenu(currentSection, currentCategory);
+
+      // Подгрузка меню из data/menu.json (если есть — например после правок в админке)
+      fetch('data/menu.json')
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+        .then(function (arr) {
+          if (Array.isArray(arr) && arr.length > 0) {
+            menuItems.length = 0;
+            arr.forEach(function (i) { menuItems.push(i); });
+            renderMenu(currentSection, currentCategory);
+          }
+        })
+        .catch(function () {});
 
       // Мобильное меню
       const mobileMenuBtn = document.querySelector('.mobile-menu-btn');

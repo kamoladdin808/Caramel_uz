@@ -624,6 +624,26 @@
       letter-spacing: 4px;
     }
 
+    .keks-ramadan {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(250, 246, 242, 0.92);
+      background: linear-gradient(135deg, rgba(205, 166, 118, 0.22), rgba(75, 46, 30, 0.28));
+      border: 1px solid rgba(205, 166, 118, 0.35);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+      text-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    }
+
     .keks-dots {
       display: flex;
       gap: 10px;
@@ -932,6 +952,21 @@
       background: linear-gradient(135deg, #D4A76A, #CDA676);
     }
 
+    .section-btn[data-section="ramadan"] {
+      background: linear-gradient(135deg, rgba(205, 166, 118, 0.55), rgba(75, 46, 30, 0.35));
+      box-shadow:
+        0 10px 28px rgba(205, 166, 118, 0.22),
+        0 6px 18px rgba(0, 0, 0, 0.10);
+    }
+
+    .section-btn[data-section="ramadan"].active {
+      background: linear-gradient(135deg, #D4A76A, #4B2E1E);
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.95),
+        0 0 0 4px rgba(205, 166, 118, 0.95),
+        0 12px 30px rgba(205, 166, 118, 0.45);
+    }
+
     .category-btn::before {
       content: '';
       position: absolute;
@@ -1008,11 +1043,43 @@
       background-color: var(--milk-white);
       border-radius: 15px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
       position: relative;
-      contain: layout style paint;
+      contain: layout style;
       will-change: transform;
+    }
+
+    .menu-item.menu-item--featured {
+      border: 2px solid rgba(205, 166, 118, 0.55);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.14),
+        0 0 0 6px rgba(205, 166, 118, 0.10);
+    }
+
+    .menu-item.menu-item--featured:hover {
+      transform: translateY(-10px);
+      box-shadow:
+        0 22px 46px rgba(0, 0, 0, 0.16),
+        0 0 0 6px rgba(205, 166, 118, 0.14);
+    }
+
+    .menu-item-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 2;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(205, 166, 118, 0.98), rgba(75, 46, 30, 0.92));
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(4px);
     }
 
     .menu-item:hover {
@@ -1599,6 +1666,7 @@
     <div class="keks-inner">
       <h1 class="keks-brand">Caramel</h1>
       <div class="keks-sub">Cake and Bakery</div>
+      <div class="keks-ramadan" data-i18n="ramadan.greeting">Рамадан мубарак</div>
       <div class="keks-dots" aria-hidden="true">
         <span class="dot"></span>
         <span class="dot"></span>
@@ -1671,7 +1739,8 @@
           </p>
         </div>
         <div class="menu-sections" id="menuSections">
-          <button class="section-btn active" data-section="food">Еда</button>
+          <button class="section-btn active" data-section="ramadan">Рамадан</button>
+          <button class="section-btn" data-section="food">Еда</button>
           <button class="section-btn" data-section="drinks">Напитки</button>
           <button class="section-btn" data-section="desserts-waffles">Десерты</button>
           <button class="section-btn" data-section="bakery">Выпечка</button>
@@ -1713,13 +1782,18 @@
         menuHero: { title: 'Меню Caramel', subtitle: 'Кофе, десерты, торты и блюда в одном удобном и понятном меню' },
         choose_section: 'Выберите раздел',
         choose_section_sub: 'Мы собрали напитки и блюда так, чтобы вам было максимально легко найти любимое',
+        ramadan: { greeting: 'Рамадан мубарак' },
         sections: {
+          ramadan: 'Рамадан',
           food: 'Еда',
           drinks: 'Напитки',
           desserts_waffles: 'Десерты и Выпечка',
           bakery: 'Выпечка'
         },
         categories: {
+          ramadan: {
+            iftar: 'Ифтар'
+          },
           food: {
             breakfast: 'Завтраки',
             pancake: 'Домашние блинчики',
@@ -1767,13 +1841,18 @@
         menuHero: { title: 'Caramel menyusi', subtitle: 'Qahva, desertlar, tortlar va taomlar — barchasi qulay menyuda' },
         choose_section: 'Bo‘limni tanlang',
         choose_section_sub: 'Sevimli taom va ichimlikni tez topishingiz uchun jamladik',
+        ramadan: { greeting: 'Ramazon muborak' },
         sections: {
+          ramadan: 'Ramazon',
           food: 'Taomlar',
           drinks: 'Ichimliklar',
-          desserts_waffles: 'Desertlar',
+          desserts_waffles: 'Shirinliklar',
           bakery: 'Pishiriqlar'
         },
         categories: {
+          ramadan: {
+            iftar: 'Iftor'
+          },
           food: {
             breakfast: 'Nonushta',
             pancake: 'Uy blinchiklari',
@@ -1821,13 +1900,18 @@
         menuHero: { title: 'Caramel Menu', subtitle: 'Coffee, desserts, cakes and dishes — all in one clear menu' },
         choose_section: 'Choose a section',
         choose_section_sub: 'We grouped the menu so you can find your favorites quickly',
+        ramadan: { greeting: 'Ramadan Mubarak' },
         sections: {
+          ramadan: 'Ramadan',
           food: 'Food',
           drinks: 'Drinks',
           desserts_waffles: 'Desserts',
           bakery: 'Bakery'
         },
         categories: {
+          ramadan: {
+            iftar: 'Iftar'
+          },
           food: {
             breakfast: 'Breakfast',
             pancake: 'Homemade pancakes',
@@ -1875,13 +1959,18 @@
         menuHero: { title: 'Caramel Menüsü', subtitle: 'Kahve, tatlılar, pastalar ve yemekler — hepsi tek menüde' },
         choose_section: 'Bir bölüm seçin',
         choose_section_sub: 'Sevdiklerinizi kolayca bulmanız için menüyü grupladık',
+        ramadan: { greeting: 'Ramazan Mübarek Olsun' },
         sections: {
+          ramadan: 'Ramazan',
           food: 'Yemekler',
           drinks: 'İçecekler',
           desserts_waffles: 'Tatlılar',
           bakery: 'Fırın'
         },
         categories: {
+          ramadan: {
+            iftar: 'İftar'
+          },
           food: {
             breakfast: 'Kahvaltı',
             pancake: 'Ev krep',
@@ -1993,6 +2082,7 @@
     }
     // Локализация названий групп (Завтраки, Салаты и т.п.)
     const GROUP_LABELS = {
+      'Рамадан': { ru: 'Рамадан', uz: 'Ramazon', en: 'Ramadan', tr: 'Ramazan' },
       'Завтраки': { ru: 'Завтраки', uz: 'Nonushta', en: 'Breakfast', tr: 'Kahvaltı' },
       'Домашние блинчики': { ru: 'Домашние блинчики', uz: 'Uy blinchiklari', en: 'Homemade pancakes', tr: 'Ev krep' },
       'Поке': { ru: 'Поке', uz: 'Poke', en: 'Poke', tr: 'Poke' },
@@ -2505,6 +2595,9 @@
 
     // конфигурация разделов и категорий
     const SECTION_CATEGORIES = {
+      ramadan: [
+        { key: 'iftar', label: 'Ифтар' }
+      ],
       food: [
         { key: 'breakfast', label: 'Завтраки' },
         { key: 'pancake', label: 'Домашние блинчики' },
@@ -5228,6 +5321,25 @@
         image: "images/vishnya_pirog.webp"
       },
 
+      // РАМАДАН
+      {
+        id: 450,
+        section: 'ramadan',
+        category: 'iftar',
+        name: "Сет для Ифтара",
+        name_uz: "Iftor seti",
+        name_en: "Iftar Set",
+        name_tr: "İftar Seti",
+        price: "80,000 so`m",
+        description: "Сет для ифтара",
+        description_uz: "Iftor uchun set",
+        description_en: "Set for iftar",
+        description_tr: "İftar için set",
+        meta: "",
+        group: "Рамадан",
+        image: "images/iftar_set.webp"
+      },
+
       // ЕДА: завтраки (BREAKFAST)
       {
         id: 503,
@@ -7302,7 +7414,7 @@
       }
     ];
 
-    let currentSection = 'food';
+    let currentSection = 'ramadan';
     let currentCategory = null;
 
     function renderMenu(section = 'food', categoryKey = null) {
@@ -7342,7 +7454,11 @@
           const itemEl = document.createElement('div');
           const isBakery = item.section === 'bakery';
           const isNoImage = isBakery || item.noImage === true;
-          itemEl.className = 'menu-item' + (isBakery ? ' menu-item--bakery' : '') + (isNoImage ? ' menu-item--no-image' : '');
+          const isFeatured = item.id === 450;
+          itemEl.className = 'menu-item'
+            + (isFeatured ? ' menu-item--featured' : '')
+            + (isBakery ? ' menu-item--bakery' : '')
+            + (isNoImage ? ' menu-item--no-image' : '');
 
           const imageHtml = isNoImage
             ? ''
@@ -7448,6 +7564,7 @@
 
           itemEl.innerHTML = `
                         <div class="menu-item-image">
+                            ${isFeatured ? `<div class="menu-item-badge">RAMADAN</div>` : ''}
                             ${imageHtml}
                         </div>
                         <div class="menu-item-content">

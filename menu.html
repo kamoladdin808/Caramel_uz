@@ -25,6 +25,14 @@
       --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #E8C874 50%, #D4AF37 100%);
       --dark: var(--chocolate);
       --text-light: #5A5A5A;
+      --shadow-sm: 0 2px 8px rgba(75, 46, 30, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 8px 30px rgba(75, 46, 30, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 60px rgba(75, 46, 30, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
+      --shadow-glow: 0 0 40px rgba(205, 166, 118, 0.15);
+      --glass-bg: rgba(250, 246, 242, 0.65);
+      --glass-border: rgba(205, 166, 118, 0.18);
+      --transition-premium: cubic-bezier(0.23, 1, 0.32, 1);
+      --gradient-divider: linear-gradient(90deg, transparent, rgba(205, 166, 118, 0.4), var(--caramel), rgba(205, 166, 118, 0.4), transparent);
     }
 
     * {
@@ -48,8 +56,9 @@
       touch-action: pan-y;
       overscroll-behavior-y: contain;
       background-image:
-        radial-gradient(circle at 10% 20%, rgba(205, 166, 118, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(205, 166, 118, 0.1) 0%, transparent 20%);
+        radial-gradient(circle at 10% 20%, rgba(205, 166, 118, 0.08) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(205, 166, 118, 0.08) 0%, transparent 25%),
+        radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
     }
 
     h1,
@@ -74,9 +83,9 @@
       width: 100%;
       height: 100px;
       z-index: 1000;
-      -webkit-backdrop-filter: blur(2px);
-      backdrop-filter: blur(2px);
-      transition: background-color 0.4s ease, box-shadow 0.4s ease;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      transition: all 0.5s var(--transition-premium);
       will-change: background-color, box-shadow;
       contain: layout style paint;
       transform: translateZ(0);
@@ -86,8 +95,10 @@
     }
 
     header.scrolled {
-      background-color: rgba(75, 46, 30, 0.95);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+      background-color: rgba(58, 36, 24, 0.92);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(205, 166, 118, 0.1);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
     }
 
     .header-container {
@@ -339,7 +350,9 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.45);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
       z-index: 1001;
     }
 
@@ -353,12 +366,15 @@
       right: -450px;
       width: 450px;
       height: 100vh;
-      background-color: var(--milk-white);
-      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+      background: rgba(250, 246, 242, 0.92);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12), -1px 0 0 rgba(205, 166, 118, 0.15);
       z-index: 2000;
-      transition: right 0.4s ease;
+      transition: right 0.5s var(--transition-premium);
       display: flex;
       flex-direction: column;
+      border-left: 1px solid var(--glass-border);
     }
 
     .cart-modal.active {
@@ -705,6 +721,17 @@
       overflow: hidden;
     }
 
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--gradient-divider);
+      z-index: 5;
+    }
+
     .hero-bg {
       position: absolute;
       top: 0;
@@ -729,13 +756,29 @@
     .hero h1 {
       font-size: clamp(2.5rem, 6vw, 4rem);
       margin-bottom: 20px;
-      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+      text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+      letter-spacing: 0.04em;
+      position: relative;
+    }
+
+    .hero h1::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 2px;
+      background: var(--gradient-gold);
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
     }
 
     .hero p {
       font-size: clamp(1.1rem, 3vw, 1.4rem);
       margin-bottom: 30px;
       opacity: 0.9;
+      letter-spacing: 0.06em;
+      font-weight: 300;
     }
 
     .btn {
@@ -798,28 +841,32 @@
     }
 
     .section-title h2 {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
       display: inline-block;
       position: relative;
       margin-bottom: 20px;
+      letter-spacing: 0.02em;
     }
 
     .section-title h2::after {
       content: '';
       position: absolute;
-      width: 100px;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--caramel), transparent);
+      width: 60px;
+      height: 2px;
+      background: var(--gradient-gold);
       bottom: -15px;
       left: 50%;
       transform: translateX(-50%);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
     }
 
     .section-title p {
       max-width: 600px;
       margin: 0 auto;
       font-size: 1.1rem;
-      color: #666;
+      color: #888;
+      letter-spacing: 0.02em;
+      line-height: 1.7;
     }
 
     .menu {
@@ -1040,14 +1087,17 @@
     }
 
     .menu-item {
-      background-color: var(--milk-white);
-      border-radius: 15px;
+      background: var(--glass-bg);
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md);
+      transition: all 0.5s var(--transition-premium);
       position: relative;
       contain: layout style;
       will-change: transform;
+      border: 1px solid var(--glass-border);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
     }
 
     .menu-item.menu-item--featured {
@@ -1083,8 +1133,9 @@
     }
 
     .menu-item:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: var(--shadow-lg), 0 0 30px rgba(205, 166, 118, 0.1);
+      border-color: rgba(205, 166, 118, 0.3);
     }
 
     .menu-item-image {
@@ -1107,12 +1158,12 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s ease;
+      transition: transform 0.7s var(--transition-premium);
       will-change: transform;
     }
 
     .menu-item:hover .menu-item-image img {
-      transform: scale(1.07);
+      transform: scale(1.06);
     }
 
     /* Выпечка и позиции без фото — скрываем блок изображения */
@@ -1215,6 +1266,7 @@
       font-size: 1.25rem;
       font-weight: 600;
       color: var(--chocolate);
+      letter-spacing: 0.01em;
     }
 
     .menu-item-price {
@@ -1370,9 +1422,20 @@
       text-align: center;
       padding-top: 20px;
       height: 60px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: none;
       font-size: 0.9rem;
       color: rgba(255, 255, 255, 0.7);
+      position: relative;
+    }
+
+    .copyright::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(205, 166, 118, 0.4), transparent);
     }
 
     .copyright a {
@@ -1506,9 +1569,11 @@
         flex-wrap: wrap;
         gap: 2px 12px;
       }
+
       .cart-summary-row span:first-child {
         width: 100%;
       }
+
       .cart-summary-row span:last-child {
         width: 100%;
         flex-shrink: 0;
@@ -1653,6 +1718,20 @@
       100% {
         transform: translateY(110vh) translateX(20px) rotate(360deg);
         opacity: 0;
+      }
+    }
+
+    /* Menu card entrance animation */
+    .menu-item-enter {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: menuCardEnter 0.6s var(--transition-premium) forwards;
+    }
+
+    @keyframes menuCardEnter {
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
   </style>
@@ -2253,9 +2332,6 @@
         if (this.items.length === 0) {
           cartItems.innerHTML = `
             <div class="empty-cart">
-              <div class="empty-cart-icon">
-                <img src="cart.png" alt="Пустая корзина">
-              </div>
               <div class="empty-cart-text">${t('empty.cart')}</div>
             </div>
           `;
@@ -5734,10 +5810,10 @@
         name_en: "Smak Salad",
         name_tr: "Smak Salatası",
         price: "35,000 so`m",
-        description: "Сочный салат с курицей, хрустящими сухариками, свежими овощами и сыром под нежным соусом",
-        description_uz: "Tovuq go'shti, tiniq suxariklar, yangi sabzavotlar va pishloq — mayin sous bilan shirador salat",
-        description_en: "Juicy salad with chicken, crispy croutons, fresh vegetables and cheese with tender sauce",
-        description_tr: "Tavuk, çıtır krutonlar, taze sebzeler ve peynir ile yumuşak soslu sulu salata",
+        description: "Сочный салат с хрустящими сухариками, свежими овощами и сыром под нежным соусом",
+        description_uz: "Tiniq suxariklar, yangi sabzavotlar va pishloq — mayin sous bilan shirador salat",
+        description_en: "Juicy salad with crispy croutons, fresh vegetables and cheese with tender sauce",
+        description_tr: "Çıtır krutonlar, taze sebzeler ve peynir ile yumuşak soslu sulu salata",
         group: "Салаты",
         image: "images/salat_smak.jpeg"
       },
@@ -7287,7 +7363,7 @@
         name_uz: "Klassik ketchup",
         name_en: "Classic Ketchup",
         name_tr: "Klasik Ketçap",
-        price: "3,000 so`m",
+        price: "5,000 so`m",
         description: "Классический томатный кетчуп",
         description_uz: "Klassik pomidor ketchupi",
         description_en: "Classic tomato ketchup",
@@ -7450,15 +7526,16 @@
 
         const grid = groupEl.querySelector('.menu-grid');
 
-        groups[groupName].forEach(item => {
+        groups[groupName].forEach((item, itemIndex) => {
           const itemEl = document.createElement('div');
           const isBakery = item.section === 'bakery';
           const isNoImage = isBakery || item.noImage === true;
           const isFeatured = item.id === 450;
-          itemEl.className = 'menu-item'
+          itemEl.className = 'menu-item menu-item-enter'
             + (isFeatured ? ' menu-item--featured' : '')
             + (isBakery ? ' menu-item--bakery' : '')
             + (isNoImage ? ' menu-item--no-image' : '');
+          itemEl.style.animationDelay = (itemIndex * 0.06) + 's';
 
           const imageHtml = isNoImage
             ? ''
@@ -7814,7 +7891,7 @@
             renderMenu(currentSection, currentCategory);
           }
         })
-        .catch(function () {});
+        .catch(function () { });
 
       // Мобильное меню
       const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
